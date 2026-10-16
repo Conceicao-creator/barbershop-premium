@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Cadastro</title>
+    <style>
+        body {
+            background-color: #121214; /* Cinza Grafite Profundo */
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .cadastro-card {
+            background-color: #202024;
+            padding: 40px;
+            border-radius: 10px;
+            width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #29292e;
+            text-align: center;
+        }
+
+        .titulo-cadastro {
+            font-size: 2rem;
+            color: #00F5D4; /* Verde Neon */
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .campo-grupo {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .campo-grupo label {
+            display: block;
+            color: #A8A8B3;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .campo-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 5px;
+            border: 2px solid #29292e;
+            background-color: #121214;
+            color: #FFFFFF;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .campo-input:focus {
+            outline: none;
+            border-color: #00F5D4;
+        }
+
+        .botao-finalizar {
+            width: 100%;
+            background-color: #00F5D4;
+            color: #121214;
+            border: none;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .botao-finalizar:hover {
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.6);
+            transform: scale(1.02);
+        }
+
+        .link-alternativo {
+            display: inline-block;
+            margin-top: 20px;
+            color: #A8A8B3;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .link-alternativo:hover { color: #00F5D4; }
+
+        /* Estilo elegante para mensagens de aviso */
+        .mensagem-alerta {
+            background-color: rgba(0, 245, 212, 0.1);
+            color: #00F5D4;
+            border: 1px solid #00F5D4;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cadastro-card">
+        <h2 class="titulo-cadastro">Novo Alistamento 📋</h2>
+
+        <!-- Alerta de sucesso ou aviso se as senhas/dados derem conflito -->
+        {% if msg_alerta %}
+            <div class="mensagem-alerta">{{ msg_alerta }}</div>
+        {% endif %}
+
+        <!-- 🛡️ CONFIGURAÇÃO DE ENVIO SEGURO POST -->
+        <form method="POST" action="/cadastro/">
+            {% csrf_token %}
+
+            <div class="campo-grupo">
+                <label for="nome_usuario">Nome de Usuário (Login)</label>
+                <!-- Atributo name="username" essencial para o Django -->
+                <input type="text" id="nome_usuario" name="username" class="campo-input" placeholder="Ex: joao.barber" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="nome_completo">Nome Completo</label>
+                <input type="text" id="nome_completo" name="first_name" class="campo-input" placeholder="Seu nome e sobrenome" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="whatsapp">WhatsApp (Para Lembretes 📲)</label>
+                <!-- Atributo name="whatsapp" -->
+                <input type="tel" id="whatsapp" name="whatsapp" class="campo-input" placeholder="(11) 99999-9999" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="email">E-mail de Acesso</label>
+                <input type="email" id="email" name="email" class="campo-input" placeholder="exemplo@email.com" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="senha">Criar Senha Secreta</label>
+                <input type="password" id="senha" name="password" class="campo-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="botao-finalizar">Finalizar Cadastro</button>
+        </form>
+
+        <a href="/login/" class="link-alternativo">Já tem uma conta? Faça login</a>
+    </div>
+
+</body>
+</html>

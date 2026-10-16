@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Checkout</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; min-height: 100vh; box-sizing: border-box; }
+        .titulo-neon { font-size: 2.3rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin: 0 0 25px 0; }
+        .container-checkout { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 35px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box; }
+        .resumo-box { background-color: #121214; border: 1px dashed #29292e; border-radius: 5px; padding: 20px; text-align: left; margin-bottom: 25px; }
+        .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
+        .resumo-linha.total { border-top: 1px solid #29292e; padding-top: 10px; margin-top: 15px; font-size: 1.2rem; font-weight: bold; color: #00F5D4; }
+        .abas-pagamento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px; }
+        .aba-btn { background-color: #121214; color: #A8A8B3; border: 1px solid #29292e; padding: 12px 5px; font-size: 0.85rem; font-weight: bold; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .aba-btn.ativa { background-color: rgba(0, 245, 212, 0.1); border-color: #00F5D4; color: #00F5D4; box-shadow: 0 0 15px rgba(0, 245, 212, 0.2); }
+        .conteudo-pagamento { display: none; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 25px; margin-bottom: 25px; box-sizing: border-box; }
+        .conteudo-pagamento.ativo { display: block; }
+        .campo-input { width: 100%; padding: 12px; background-color: #202024; border: 1px solid #29292e; color: #FFFFFF; font-size: 0.9rem; border-radius: 5px; box-sizing: border-box; }
+        .qrcode-box { background-color: #FFFFFF; width: 130px; height: 130px; margin: 0 auto 20px auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .botao-copiar { width: 100%; background-color: transparent; color: #00F5D4; border: 1px solid #00F5D4; padding: 10px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; cursor: pointer; }
+        .btn-cashback { background-color: #00F5D4; color: #121214; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        .btn-cashback:disabled { background-color: #29292e; color: #A8A8B3; cursor: not-allowed; }
+        .secao-cupom { display: flex; gap: 10px; margin-bottom: 25px; border-top: 1px solid #29292e; padding-top: 20px; }
+        .btn-cupom { background-color: transparent; color: #FFFFFF; border: 1px solid #29292e; padding: 0 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .botao-concluir { width: 100%; background-color: #00F5D4; color: #121214; border: none; padding: 15px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; cursor: pointer; }
+        .link-voltar { margin-top: 25px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; display: inline-block; }
+        .link-voltar:hover { color: #00F5D4; }
+        .rotulo-invisivel { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+    </style>
+</head>
+<body>
+
+    <h1 class="titulo-neon">Finalizar Experiência 💳</h1>
+
+    <div class="container-checkout">
+
+        <div class="resumo-box">
+            <div class="resumo-linha"><span>Serviço:</span><span style="color: #FFFFFF; font-weight: bold;">{{ servico_escolhido }}</span></div>
+            <div class="resumo-linha"><span>Barbeiro:</span><span>Lucas Silva 🪒</span></div>
+            <div class="resumo-linha"><span>Horário:</span><span>{{ data_escolhida }} às {{ horario_escolhido }} 📅</span></div>
+            <div class="resumo-linha total"><span>Total:</span><span id="valor_total">R$ {{ preco_escolhido }}</span></div>
+        </div>
+
+        <div class="abas-pagamento">
+            <button type="button" class="aba-btn ativa" data-alvo="pag_pix"><span>📲</span>PIX</button>
+            <button type="button" class="aba-btn" data-alvo="pag_cartao"><span>💳</span>Cartão</button>
+            <button type="button" class="aba-btn" data-alvo="pag_dinheiro"><span>💵</span>Dinheiro</button>
+            <button type="button" class="aba-btn" data-alvo="pag_saldo"><span>💰</span>Saldo</button>
+        </div>
+
+        <div id="pag_pix" class="conteudo-pagamento ativo">
+            <div class="qrcode-box"><div style="font-size:3.5rem; color:#121214;">🔲</div></div>
+            <label for="pix_codigo" class="rotulo-invisivel">Código PIX</label>
+            <input type="text" class="campo-input" id="pix_codigo" style="margin-bottom:15px; color:#A8A8B3;" readonly value="00020101021226850014br.gov.bcb.pix2563barbershopimperial">
+            <button type="button" class="botao-copiar" id="btn_copiar">Copiar Código PIX</button>
+        </div>
+
+        <div id="pag_cartao" class="conteudo-pagamento">
+            <p style="color: #A8A8B3; font-size: 0.9rem; margin-bottom:15px;">Preencha os dados do cartão de crédito ou débito no balcão.</p>
+        </div>
+        <div id="pag_dinheiro" class="conteudo-pagamento">
+            <p style="color: #A8A8B3; font-size: 0.9rem; margin: 0;">Pague no balcão após o atendimento.</p>
+        </div>
+        <div id="pag_saldo" class="conteudo-pagamento">
+            <p style="color: #A8A8B3; font-size: 0.95rem; margin: 0;">Use seus créditos reais imperiais acumulados.</p>
+            <div style="background-color:#121214; padding:12px; border-radius:5px; border:1px solid #29292e; margin-top:10px; margin-bottom:10px;">
+                <span style="color:#00F5D4; font-size:1.5rem; font-weight:bold;" id="saldo_exibicao">R$ 15,00</span>
+            </div>
+            <button type="button" class="btn-cashback" id="btn_usar_saldo">Usar Crédito</button>
+        </div>
+
+        <div class="secao-cupom">
+            <div style="flex: 1;"><label for="cupom_input" class="rotulo-invisivel">Cupom</label><input type="text" id="cupom_input" class="campo-input" style="text-transform: uppercase;" placeholder="CUPOM (Ex: RAINHA10)"></div>
+            <button type="button" class="btn-cupom" id="btn_aplicar_cupom">Aplicar</button>
+        </div>
+
+        <form method="POST" action="/checkout/">
+            {% csrf_token %}
+            <input type="hidden" name="data" value="{{ data_escolhida }}">
+            <input type="hidden" name="horario" value="{{ horario_escolhido }}">
+            <input type="hidden" name="servico" value="{{ servico_escolhido }}">
+            <input type="hidden" name="preco" value="{{ preco_puro }}">
+            <input type="hidden" id="usou_cashback_flag" name="usou_cashback_flag" value="nao">
+            <button type="submit" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
+        </form>
+
+        <a href="/agendamento/" class="link-voltar">← Alterar Data ou Horário</a>
+    </div>
+
+    <script>
+        const abas = document.querySelectorAll('.aba-btn');
+        const conteudos = document.querySelectorAll('.conteudo-pagamento');
+        abas.forEach(aba => {
+            aba.addEventListener('click', () => {
+                abas.forEach(a => a.classList.remove('ativa'));
+                conteudos.forEach(c => c.classList.remove('ativo'));
+                aba.classList.add('ativa');
+                document.getElementById(aba.getAttribute('data-alvo')).classList.add('ativo');
+            });
+        });
+
+        const btnCopiar = document.getElementById('btn_copiar');
+        btnCopiar.addEventListener('click', () => {
+            const campoPix = document.getElementById('pix_codigo');
+            campoPix.select();
+            navigator.clipboard.writeText(campoPix.value);
+            btnCopiar.innerText = '✓ Código Copiado!';
+            setTimeout(() => { btnCopiar.innerText = 'Copiar Código PIX'; }, 2000);
+        });
+
+        let valorBase = parseFloat("{{ preco_puro }}");
+        let saldoDisponivel = parseFloat("{{ saldo_real_banco }}");
+
+        if (isNaN(saldoDisponivel)) {
+            saldoDisponivel = 15.00;
+        }
+
+        document.getElementById('saldo_exibicao').innerText = 'R$ ' + saldoDisponivel.toFixed(2).replace('.', ',');
+
+        let cupomAplicado = false;
+        let cashbackAplicado = false;
+        const txtTotal = document.getElementById('valor_total');
+
+        document.getElementById('btn_aplicar_cupom').addEventListener('click', () => {
+            const cupomText = document.getElementById('cupom_input').value.toUpperCase().trim();
+            if (cupomText === 'RAINHA10' && !cupomAplicado) {
+                valorBase -= 10.00; cupomAplicado = true;
+                if(valorBase < 0) valorBase = 0;
+                txtTotal.innerText = 'R$ ' + valorBase.toFixed(2).replace('.', ',');
+                alert('Cupom validado com sucesso!');
+            } else if (cupomAplicado) { alert('Um cupom ja foi ativado!'); }
+            else { alert('Cupom invalido.'); }
+        });
+
+        const btnUsarSaldo = document.getElementById('btn_usar_saldo');
+        btnUsarSaldo.addEventListener('click', () => {
+            if (!cashbackAplicado && saldoDisponivel > 0) {
+                valorBase -= saldoDisponivel;
+                if(valorBase < 0) valorBase = 0;
+
+                cashbackAplicado = true;
+                document.getElementById('saldo_exibicao').innerText = 'R$ 0,00';
+document.getElementById('usou_cashback_flag').value = 'sim';
+btnUsarSaldo.innerText = '✓ Aplicado!';
+btnUsarSaldo.disabled = true;
+txtTotal.innerText = 'R$ ' + valorBase.toFixed(2).replace('.', ',');
+alert('Crédito imperial resgatado com sucesso!');
+} else if(saldoDisponivel <= 0) {
+alert('Você não possui saldo acumulado no momento.');
+}
+});
+    </script>
+</body>
+</html>

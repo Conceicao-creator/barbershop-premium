@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Agendamento</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; min-height: 100vh; box-sizing: border-box; }
+        .titulo-neon { font-size: 2.3rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin: 0; }
+        .subtitulo { color: #A8A8B3; font-size: 1rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px; }
+        .container-agenda { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 35px; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box; }
+        .secao-grupo { text-align: left; margin-bottom: 25px; }
+        .secao-grupo label { display: block; color: #A8A8B3; margin-bottom: 10px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .campo-seletor { width: 100%; padding: 14px; background-color: #121214; border: 1px solid #29292e; color: #FFFFFF; font-size: 1rem; border-radius: 5px; box-sizing: border-box; font-weight: bold; }
+        .grid-horarios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
+        .btn-horario { background-color: #121214; color: #FFFFFF; border: 1px solid #29292e; padding: 14px; font-size: 0.95rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: all 0.2s ease; }
+        .btn-horario:hover { border-color: #00F5D4; color: #00F5D4; }
+
+        /* 🔑 O ESCUDO DA RAINHA: Comando colado coladinho na linha 20 que força o PyCharm a engolir a reclamação e aceitar o estilo neon! */
+        /* noinspection CssUnusedSymbol */
+        .btn-horario.selecionado { background-color: rgba(0, 245, 212, 0.1); border-color: #00F5D4; color: #00F5D4; box-shadow: 0 0 15px rgba(0, 245, 212, 0.2); }
+
+        .botao-avancar { width: 100%; background-color: #00F5D4; color: #121214; border: none; padding: 15px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; cursor: pointer; margin-top: 20px; transition: all 0.3s ease; }
+        .botao-avancar:hover { box-shadow: 0 0 25px rgba(0, 245, 212, 0.6); transform: scale(1.01); }
+        .link-voltar { margin-top: 25px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; display: inline-block; }
+        .link-voltar:hover { color: #00F5D4; }
+    </style>
+</head>
+<body>
+
+    <h1 class="titulo-neon">Reserva Imperial 🗓️</h1>
+    <p class="subtitulo">Defina o profissional, o dia e o seu horário</p>
+
+    <div class="container-agenda">
+
+        <div class="secao-grupo">
+            <label for="profissional">Escolha o Profissional</label>
+            <select id="profissional" class="campo-seletor">
+                <option>Lucas Silva (Especialista em Degradê) ⚡</option>
+                <option>Gabriel Master (Mestre das Toalhas Quentes) 🪒</option>
+                <option>Jonas Soares (Visagista de Elite) 👑</option>
+            </select>
+        </div>
+
+        <div class="secao-grupo">
+            <label for="data">Selecione o Dia</label>
+            <input type="date" id="data" class="campo-seletor">
+        </div>
+
+        <div class="secao-grupo">
+            <label>Horários Disponíveis</label>
+            <div class="grid-horarios">
+                <button type="button" class="btn-horario">09:00</button>
+                <button type="button" class="btn-horario">10:00</button>
+                <button type="button" class="btn-horario">11:00</button>
+                <button type="button" class="btn-horario">14:00</button>
+                <button type="button" class="btn-horario">15:00</button>
+                <button type="button" class="btn-horario">16:00</button>
+                <button type="button" class="btn-horario">17:00</button>
+                <button type="button" class="btn-horario">18:00</button>
+                <button type="button" class="btn-horario">19:00</button>
+            </div>
+        </div>
+
+        <button type="button" class="botao-avancar" id="btn_avancar">Avançar para o Pagamento</button>
+
+        <a href="/servicos/" class="link-voltar">← Voltar para o Menu de Serviços</a>
+    </div>
+
+    <script>
+        const campoData = document.getElementById('data');
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoje.getDate()).padStart(2, '0');
+
+        const dataAtualFormatada = `${ano}-${mes}-${dia}`;
+        campoData.value = dataAtualFormatada;
+        campoData.min = dataAtualFormatada;
+
+        let horarioSelecionado = "14:00h";
+        const botoesHorario = document.querySelectorAll('.btn-horario');
+
+        botoesHorario.forEach(botao => {
+            botao.addEventListener('click', () => {
+                botoesHorario.forEach(b => b.classList.remove('selecionado'));
+                botao.classList.add('selecionado');
+                horarioSelecionado = botao.innerText + 'h';
+            });
+        });
+
+        document.getElementById('btn_avancar').addEventListener('click', () => {
+            const dataEscolhida = campoData.value;
+            if(!dataEscolhida) {
+                alert('Por favor, selecione uma data válida, Soberana!');
+                return;
+            }
+
+            // 🔑 A CORREÇÃO DE MILHÕES: Separa AAAA-MM-DD e reorganiza como DD/MM/AAAA perfeitamente!
+            const partes = dataEscolhida.split('-');
+            const dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const servicoReal = urlParams.get('servico') || "Combo Imperial Premium 👑";
+            const precoReal = urlParams.get('preco') || "85.00";
+
+            window.location.href = `/checkout/?data=${dataFormatada}&horario=${horarioSelecionado}&servico=${encodeURIComponent(servicoReal)}&preco=${precoReal}`;
+        });
+
+    </script>
+</body>
+</html>

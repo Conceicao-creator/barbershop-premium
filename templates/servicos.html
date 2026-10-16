@@ -1,0 +1,117 @@
+<!-- 🔑 O TIRO DE MESTRE DA SOBERANA: Bloqueia e silencia absolutamente qualquer aviso falso de arquivos ou diretórios nesta folha inteira! -->
+<!-- suppress HtmlUnknownTarget -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Serviços</title>
+    <style>
+        body {
+            background-color: #121214;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .topo-catalogo { text-align: center; margin-bottom: 40px; }
+        .titulo-neon { font-size: 2.5rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin: 0; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); }
+        .subtitulo { color: #A8A8B3; font-size: 1rem; letter-spacing: 1px; margin-top: 5px; }
+        .grade-servicos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; }
+        .cartao-servico { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 25px; text-align: left; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .cartao-servico:hover { border-color: #00F5D4; transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 245, 212, 0.15); }
+        .emoji-servico { font-size: 2rem; margin-bottom: 15px; }
+        .nome-servico { font-size: 1.3rem; font-weight: bold; margin: 0 0 10px 0; letter-spacing: 1px; }
+        .descricao-servico { color: #A8A8B3; font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px 0; }
+        .preco-servico { font-size: 1.4rem; font-weight: 800; color: #00F5D4; margin: 0; text-shadow: 0 0 5px rgba(0, 245, 212, 0.2); }
+        .botao-escolher { background-color: transparent; color: #FFFFFF; border: 1px solid #29292e; padding: 10px 0; width: 100%; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 15px; transition: all 0.3s ease; }
+        .cartao-servico:hover .botao-escolher { background-color: #00F5D4; color: #121214; border-color: #00F5D4; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); }
+        .link-sair { margin-top: 40px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
+        .link-sair:hover { color: #FF6B6B; }
+    </style>
+</head>
+<body>
+
+    <div class="topo-catalogo">
+        <h1 class="titulo-neon">Menu Imperial ✂️</h1>
+        <p class="subtitulo">SELECIONE OS TRATAMENTOS DE PONTA PARA O SEU ESTILO</p>
+    </div>
+
+    <div class="grade-servicos">
+
+        <!-- Serviço 1 -->
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">💇‍♂️</div>
+                <h3 class="nome-servico">Corte High Fade / Degradê</h3>
+                <p class="descricao-servico">Corte moderno de alta precisão com acabamento texturizado e navalhado milimétrico na tendência atual.</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ 50,00</p>
+                <a href="/agendamento/?servico=Corte Fade Premium ✂️&preco=50.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+
+        <!-- Serviço 2 -->
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">🪒</div>
+                <h3 class="nome-servico">Terapia Spa da Barba</h3>
+                <p class="descricao-servico">Alinhamento de barba com técnica de toalha quente, óleos essenciais ozonizados e massagem facial relaxante.</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ 40,00</p>
+                <a href="/agendamento/?servico=Barba de Gala Imperial 🪒&preco=40.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+
+        <!-- Serviço 3 -->
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">👑</div>
+                <h3 class="nome-servico">Combo Imperial Premium</h3>
+                <p class="descricao-servico">A experiência máxima: Corte moderno à escolha, Terapia de barba, Alinhamento de sobrancelha e Lavagem premium.</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ 85,00</p>
+                <a href="/agendamento/?servico=Combo Imperial Premium 👑&preco=85.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+
+        <!-- Serviço 4 -->
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">🧪</div>
+                <h3 class="nome-servico">Platinado / Nevou de Elite</h3>
+                <p class="descricao-servico">Descoloração global avançada com protetores térmicos capilares para um branco platinado uniforme e moderno.</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ 110,00</p>
+                <a href="/agendamento/?servico=Platinado Nevou de Elite 🧪&preco=110.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+
+        <!-- Serviço 5 -->
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">🎭</div>
+                <h3 class="nome-servico">Termo-Peeling Facial</h3>
+                <p class="descricao-servico">Tratamento de ponta com máscara negra de carvão ativado, esfoliação ultrassônica e hidratação pós-barba.</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ 45,00</p>
+                <a href="/agendamento/?servico=Termo-Peeling Facial 🎭&preco=45.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+
+    </div>
+
+    <a href="/" class="link-sair">← Encerrar Sessão</a>
+
+</body>
+</html>

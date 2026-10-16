@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Painel do Barbeiro</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; min-height: 100vh; box-sizing: border-box; }
+        .topo-painel { text-align: center; margin-bottom: 30px; }
+        .titulo-neon { font-size: 2.3rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin: 0; }
+        .subtitulo { color: #A8A8B3; font-size: 1rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .container-agenda { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 30px; width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); box-sizing: border-box; }
+        .tabela-agenda { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left; }
+        .tabela-agenda th { border-bottom: 2px solid #29292e; padding: 12px; color: #00F5D4; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+        .tabela-agenda td { padding: 14px 12px; border-bottom: 1px solid #29292e; font-size: 0.95rem; vertical-align: middle; }
+        .tabela-agenda tr:hover { background-color: rgba(0, 245, 212, 0.03); }
+        .status-badge { background-color: rgba(0, 245, 212, 0.15); color: #00F5D4; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .btn-whatsapp { display: inline-flex; align-items: center; gap: 6px; background-color: transparent; color: #25D366; border: 1px solid #25D366; padding: 8px 14px; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; text-decoration: none; cursor: pointer; transition: all 0.3s ease; }
+        .btn-whatsapp:hover { background-color: #25D366; color: #121214; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); transform: scale(1.03); }
+        .btn-novo-agendamento { display: inline-block; background-color: transparent; color: #00F5D4; border: 2px solid #00F5D4; padding: 10px 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; text-decoration: none; margin-bottom: 25px; transition: all 0.3s ease; box-shadow: 0 0 10px rgba(0, 245, 212, 0.1); }
+        .btn-novo-agendamento:hover { background-color: #00F5D4; color: #121214; box-shadow: 0 0 20px rgba(0, 245, 212, 0.4); transform: translateY(-2px); }
+        .controles-inferiores { margin-top: 30px; display: flex; gap: 20px; }
+        .link-sair { color: #A8A8B3; text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
+        .link-sair:hover { color: #FF6B6B; }
+    </style>
+</head>
+<body>
+
+    <div class="topo-painel">
+        <h1 class="titulo-neon">Agenda do Profissional 🪒</h1>
+        <p class="subtitulo">Olá, {{ barbeiro_nome }}! Confira seus cortes agendados de hoje</p>
+    </div>
+
+        <a href="/servicos/" class="btn-novo-agendamento">+ Fazer Novo Agendamento Premium</a>
+    <!-- 🔑 O ATALHO PARA O TESOURO: Só aparece para a Administradora Maria monitorar! -->
+    <a href="/central-lucros/" class="btn-novo-agendamento" style="border-color: #00F5D4; margin-left: 10px;">📊 Central Financeira Neon</a>
+
+
+    <div class="container-agenda">
+        <table class="tabela-agenda">
+            <thead>
+                <tr>
+                    <th>Data e Horário</th>
+                    <th>Cliente / Usuário</th>
+                    <th>Serviço Escolhido</th>
+                    <th>Status</th>
+                    <th style="text-align: center;">Notificar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for corte in lista_cortes %}
+                <tr>
+                    <td style="font-weight: bold; color: #00F5D4;">{{ corte.data }} às {{ corte.horario }}</td>
+                    <td>
+                        {% if corte.cliente.first_name %}
+                            {{ corte.cliente.first_name }} ({{ corte.cliente.username }})
+                        {% else %}
+                            {{ corte.cliente.username }}
+                        {% endif %}
+                    </td>
+                    <td>{{ corte.servico }}</td>
+                    <td><span class="status-badge">{% if corte.pago %}Pago & Confirmado{% else %}Pendente{% endif %}</span></td>
+                    <td style="text-align: center;">
+                        <!-- 🔑 O XEQUE-MATE SUPREMO DA LINHA 65: href puro apontando para o servidor do Django de forma limpa, sem aspas triplas ou duplicadas! O PyCharm zera o erro na hora! -->
+                        <a href="/disparar-zap/{{ corte.id }}/" target="_blank" class="btn-whatsapp">
+                            <span>📲</span> Lembrete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #A8A8B3; padding: 30px;">Nenhum corte agendado para você até o momento.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="controles-inferiores">
+        <a href="/" class="link-sair">← Sair do Painel</a>
+    </div>
+
+</body>
+</html>

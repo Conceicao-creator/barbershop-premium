@@ -1,0 +1,72 @@
+<!-- suppress HtmlUnknownTarget -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Cadastrar Barbeiro</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 20px; margin: 0; box-sizing: border-box; }
+        .topo-painel { text-align: center; margin-bottom: 25px; }
+        .titulo-neon { font-size: 2.3rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin: 0; }
+        .subtitulo { color: #A8A8B3; font-size: 1rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .container-cadastro { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 35px; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); text-align: center; box-sizing: border-box; }
+
+        .campo-grupo { text-align: left; margin-bottom: 20px; }
+        .campo-grupo label { display: block; color: #A8A8B3; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .campo-input { width: 100%; padding: 12px; background-color: #121214; border: 1px solid #29292e; color: #FFFFFF; font-size: 0.95rem; border-radius: 5px; box-sizing: border-box; transition: border-color 0.3s ease; }
+        .campo-input:focus { outline: none; border-color: #00F5D4; }
+
+        .botao-cadastrar { width: 100%; background-color: #00F5D4; color: #121214; border: none; padding: 14px; font-size: 1.05rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
+        .botao-cadastrar:hover { box-shadow: 0 0 25px rgba(0, 245, 212, 0.6); transform: scale(1.02); }
+
+        .painel-alerta { background-color: rgba(255, 107, 107, 0.15); color: #FF6B6B; border: 1px solid #FF6B6B; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9rem; font-weight: bold; }
+        .painel-sucesso { background-color: rgba(0, 245, 212, 0.15); color: #00F5D4; border: 1px solid #00F5D4; padding: 12px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9rem; font-weight: bold; }
+        .link-voltar { margin-top: 25px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; display: inline-block; }
+        .link-voltar:hover { color: #00F5D4; }
+    </style>
+</head>
+<body>
+
+    <div class="topo-painel">
+        <h1 class="titulo-neon">Credenciamento 🪒</h1>
+        <p class="subtitulo">Adicionar Novo Profissional à Equipe</p>
+    </div>
+
+    <div class="container-cadastro">
+
+        {% if msg_alerta %}
+            <div class="painel-alerta">{{ msg_alerta }}</div>
+        {% endif %}
+
+        {% if msg_sucesso %}
+            <div class="painel-sucesso">{{ msg_sucesso }}</div>
+        {% endif %}
+
+        <form method="POST" action="/cadastrar-barbeiro/">
+            {% csrf_token %}
+
+            <div class="campo-grupo">
+                <label for="username">Nome de Usuário (Login do Sistema)</label>
+                <input type="text" id="username" name="username" class="campo-input" placeholder="Ex: gabriel.barber" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="first_name">Nome Completo do Barbeiro</label>
+                <input type="text" id="first_name" name="first_name" class="campo-input" placeholder="Ex: Gabriel Master" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="password">Senha Provisória de Acesso</label>
+                <input type="password" id="password" name="password" class="campo-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="botao-cadastrar">Registrar Profissional</button>
+        </form>
+
+        <a href="/central-lucros/" class="link-voltar">← Voltar para a Central Financeira</a>
+    </div>
+
+</body>
+</html>

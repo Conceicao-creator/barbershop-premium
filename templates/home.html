@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Home</title>
+    <style>
+        /* Estilos Ultra Modernos */
+        body {
+            background-color: #121214; /* Cinza Grafite Profundo */
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            text-align: center;
+            animation: flutuar 3s ease-in-out infinite;
+        }
+
+        .logo-texto {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #00F5D4; /* Verde Neon / Ciano Elétrico */
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+        }
+
+        .subtitulo {
+            font-size: 1.2rem;
+            color: #A8A8B3;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        .botao-neon {
+            margin-top: 40px;
+            background-color: transparent;
+            color: #00F5D4;
+            border: 2px solid #00F5D4;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+        }
+
+        /* Efeito de passar o mouse que você adora! */
+        .botao-neon:hover {
+            background-color: #00F5D4;
+            color: #121214;
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.7);
+            transform: scale(1.05);
+        }
+
+        /* Animação pro Logotipo ficar flutuando suave na tela */
+        @keyframes flutuar {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <h1 class="logo-texto">BarberShop Imperial 💈</h1>
+        <p class="subtitulo">O FUTURO DO ESTILO E DA ESTÉTICA</p>
+    </div>
+
+    <a href="/login/"><button class="botao-neon">Entrar no Sistema</button></a>
+
+</body>
+</html>
