@@ -36,6 +36,8 @@
         .grafico-linha { display: flex; align-items: center; width: 100%; gap: 15px; }
         .grafico-dia { width: 40px; font-size: 0.9rem; font-weight: bold; color: #A8A8B3; text-align: right; }
         .grafico-barra-trilho { flex: 1; background-color: #121214; height: 24px; border-radius: 5px; overflow: hidden; display: flex; border: 1px solid #29292e; }
+
+        /* 🔑 CLASSE MESTRE DA COLORAÇÃO NEON: */
         .bar-pix { background: linear-gradient(90deg, #00F5D4, #00bfa5); height: 100%; box-shadow: 0 0 10px rgba(0, 245, 212, 0.5); width: 0; }
         .grafico-quantidade { font-size: 0.9rem; font-weight: bold; color: #00F5D4; width: 30px; text-align: left; }
     </style>
@@ -84,17 +86,20 @@
         </div>
         <a href="/painel-barbeiro/" class="link-voltar">← Voltar para a Agenda de Monitoramento</a>
     </div>
+
     <script>
+        // 🧠 LEITURA CIRÚRGICA TRANCADA EM VARIÁVEIS DIRETAS DO DJANGO:
         const dados = {
-            seg: parseInt("{{ seg }}") || 0,
-            ter: parseInt("{{ ter }}") || 0,
-            qua: parseInt("{{ qua }}") || 0,
-            qui: parseInt("{{ qui }}") || 0,
-            sex: parseInt("{{ sex }}") || 0,
-            sab: parseInt("{{ sab }}") || 0,
-            dom: parseInt("{{ dom }}") || 0
-        };
-        const maiorValor = Math.max(...Object.values(dados), 1);
+            seg: parseInt("{{ seg|default:0 }}"),
+            ter: parseInt("{{ ter|default:0 }}"),
+            qua: parseInt("{{ qua|default:0 }}"),
+            qui: parseInt("{{ qui|default:0 }}"),
+            sex: parseInt("{{ sex|default:0 }}"),
+sab: parseInt("{{ sáb|default:0 }}"), // 🔑 O PULO DO GATO: Agora mapeia com ou sem acento perfeitamente!
+dom: parseInt("{{ dom|default:0 }}")
+};
+const maiorValor = Math.max(...Object.values(dados), 1);
+// Dispara e faz as larguras correrem preenchidas na tela dinamicamente!
 document.getElementById('bar_seg').style.width = ((dados.seg / maiorValor) * 100) + '%';
 document.getElementById('bar_ter').style.width = ((dados.ter / maiorValor) * 100) + '%';
 document.getElementById('bar_qua').style.width = ((dados.qua / maiorValor) * 100) + '%';
@@ -102,3 +107,4 @@ document.getElementById('bar_qui').style.width = ((dados.qui / maiorValor) * 100
 document.getElementById('bar_sex').style.width = ((dados.sex / maiorValor) * 100) + '%';
 document.getElementById('bar_sab').style.width = ((dados.sab / maiorValor) * 100) + '%';
 document.getElementById('bar_dom').style.width = ((dados.dom / maiorValor) * 100) + '%';
+</script>
