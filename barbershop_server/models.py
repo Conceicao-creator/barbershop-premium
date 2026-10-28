@@ -24,3 +24,12 @@ class PerfilCliente(models.Model):
 
     def __str__(self):
         return f"Carteira de {self.user.username} - Saldo: R$ {self.saldo_cashback:.2f}"
+
+# 🎟️ TABELA INDEPENDENTE DA FÁBRICA DE CUPONS: Puxada totalmente para a parede esquerda!
+class CupomDesconto(models.Model):
+    codigo = models.CharField(max_length=20, unique=True, verbose_name="Código do Cupom")
+    valor_desconto = models.FloatField(verbose_name="Valor do Desconto (R$)")
+    ativo = models.BooleanField(default=True, verbose_name="Cupom Ativo?")
+
+    def __str__(self):
+        return f"{self.codigo} - R$ {self.valor_desconto:.2f}"

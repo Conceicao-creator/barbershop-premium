@@ -3,27 +3,39 @@ from django.urls import path
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
-from barbershop_server.models import Agendamento, PerfilCliente
-from django.contrib.admin.exceptions import AlreadyRegistered
+from barbershop_server.models import Agendamento, PerfilCliente, CupomDesconto
 from django.core.mail import send_mail
 from datetime import datetime
 
+
 class AgendamentoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cliente', 'servico', 'barbeiro', 'data', 'horario', 'valor_bruto', 'desconto_aplicado', 'meio_pagamento', 'pago')
+    list_display = ('id', 'cliente', 'servico', 'barbeiro', 'data', 'horario', 'valor_bruto', 'desconto_aplicado',
+                    'meio_pagamento', 'pago')
     list_filter = ('barbeiro', 'pago', 'meio_pagamento')
     search_fields = ('cliente__username', 'servico')
+
 
 class PerfilClienteAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'saldo_cashback')
 
-try:
+
+class CupomDescontoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'codigo', 'valor_desconto', 'ativo')
+
+
+if not admin.site.is_registered(Agendamento):
     admin.site.register(Agendamento, AgendamentoAdmin)
+
+if not admin.site.is_registered(PerfilCliente):
     admin.site.register(PerfilCliente, PerfilClienteAdmin)
-except AlreadyRegistered:
-    pass
+
+if not admin.site.is_registered(CupomDesconto):
+    admin.site.register(CupomDesconto, CupomDescontoAdmin)
+
 
 def pagina_inicial(request):
     return render(request, 'home.html')
+
 
 def pagina_login(request):
     if request.method == 'POST':
@@ -43,6 +55,7 @@ def pagina_login(request):
             return render(request, 'login.html', {'erro': 'Usuário ou senha incorretos. Tente novamente, Soberana!'})
     return render(request, 'login.html')
 
+
 def pagina_cadastro(request):
     if request.method == 'POST':
         usuario = request.POST.get('username').lower().strip()
@@ -51,18 +64,23 @@ def pagina_cadastro(request):
         email_cliente = request.POST.get('email')
         senha_cliente = request.POST.get('password')
         if User.objects.filter(username=usuario).exists():
-            return render(request, 'cadastro.html', {'msg_alerta': 'Este nome de usuário já está sendo usado. Tente outro!'})
-        novo_cliente = User.objects.create_user(username=usuario, email=email_cliente, password=senha_cliente, first_name=nome, last_name=whats)
+            return render(request, 'cadastro.html',
+                          {'msg_alerta': 'Este nome de usuário já está sendo usado. Tente outro!'})
+        novo_cliente = User.objects.create_user(username=usuario, email=email_cliente, password=senha_cliente,
+                                                first_name=nome, last_name=whats)
         novo_cliente.save()
         PerfilCliente.objects.create(user=novo_cliente)
         return render(request, 'login.html', {'erro': 'Cadastro realizado com maestria! Faça o seu primeiro acesso.'})
     return render(request, 'cadastro.html')
 
+
 def pagina_servicos(request):
     return render(request, 'servicos.html')
 
+
 def pagina_agendamento(request):
     return render(request, 'agendamento.html')
+
 
 def pagina_checkout(request):
     servico_real = request.POST.get('servico') or request.GET.get('servico', 'Combo Imperial Premium 👑')
@@ -97,7 +115,9 @@ def pagina_checkout(request):
             if usou_credito:
                 meio_escolhido = 'Saldo'
             novo_agendamento = Agendamento.objects.create(
-                cliente=request.user, servico=servico_real, barbeiro="lucas.barber", data=data_real, horario=horario_real, pago=True, valor_bruto=preco_numero, desconto_aplicado=desconto_total, meio_pagamento=meio_escolhido
+                cliente=request.user, servico=servico_real, barbeiro="lucas.barber", data=data_real,
+                horario=horario_real, pago=True, valor_bruto=preco_numero, desconto_aplicado=desconto_total,
+                meio_pagamento=meio_escolhido
             )
             novo_agendamento.save()
             bonus_novo = preco_numero * 0.10
@@ -107,12 +127,15 @@ def pagina_checkout(request):
             nome_do_cliente = request.user.first_name if request.user.first_name else request.user.username
             assunto = f"Confirmação Imperiosa - Seu lugar no trono está reservado! 🎉"
             corpo_mensagem = f"Olá, {nome_do_cliente}!\n\nSeu agendamento foi confirmado!\n\nLink do PIX: https://tinyurl.com\n\nAtenciosamente,\nBarberShop Imperial 👑"
-            send_mail(assunto, corpo_mensagem, 'atendimento@barbershopimperial.com.br', [email_do_cliente], fail_silently=True)
+            send_mail(assunto, corpo_mensagem, 'atendimento@barbershopimperial.com.br', [email_do_cliente],
+                      fail_silently=True)
             return redirect('pagina_sucesso')
     return render(request, 'checkout.html', contexto)
 
+
 def pagina_sucesso(request):
     return render(request, 'sucesso.html')
+
 
 def pagina_barbeiro(request):
     if request.user.is_authenticated:
@@ -132,6 +155,7 @@ def pagina_barbeiro(request):
     }
     return render(request, 'painel_barbeiro.html', contexto_barbeiro)
 
+
 def central_financeira(request):
     todos_agendamentos = Agendamento.objects.all()
     total_cortes = todos_agendamentos.count()
@@ -140,19 +164,32 @@ def central_financeira(request):
     lucro_liquido = faturamento_bruto - total_descontos
     ticket_calculado = 85.00 if total_cortes == 0 else lucro_liquido / total_cortes
     total_pix = sum((c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if c.meio_pagamento == 'PIX')
-    total_cartao = sum((c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if c.meio_pagamento == 'Cartão')
-    total_especie = sum((c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if c.meio_pagamento == 'Dinheiro')
+    total_cartao = sum(
+        (c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if c.meio_pagamento in ['Cartão', 'Cartao'])
+    total_especie = sum((c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if
+                        c.meio_pagamento in ['Dinheiro', 'Espécie', 'Especie'])
     total_saldo = sum((c.valor_bruto - c.desconto_aplicado) for c in todos_agendamentos if c.meio_pagamento == 'Saldo')
+
     contagem_dias = {"Seg": 0, "Ter": 0, "Qua": 0, "Qui": 0, "Sex": 0, "Sáb": 0, "Dom": 0}
     mapa_dias = {0: "Seg", 1: "Ter", 2: "Qua", 3: "Qui", 4: "Sex", 5: "Sáb", 6: "Dom"}
+
     for corte in todos_agendamentos:
-        try:
-            data_objeto = datetime.strptime(corte.data, "%d/%m/%Y")
+        data_objeto = None
+        for formato in ["%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y"]:
+            try:
+                data_objeto = datetime.strptime(corte.data.strip(), formato)
+                break
+            except ValueError:
+                pass
+        if data_objeto:
             numero_dia = data_objeto.weekday()
             sigla_dia = mapa_dias[numero_dia]
             contagem_dias[sigla_dia] += 1
-        except ValueError:
-            pass
+
+    # 📊 CÁLCULO INVISÍVEL DAS PORCENTAGENS DIRETO NO PYTHON:
+    maior_volume = max(contagem_dias.values()) if max(contagem_dias.values()) > 0 else 1
+    larguras = {dia: (qtd / maior_volume) * 100 for dia, qtd in contagem_dias.items()}
+
     contexto_financeiro = {
         'total_faturado': f"{faturamento_bruto:,.2f}".replace('.', ','),
         'total_descontos': f"{total_descontos:,.2f}".replace('.', ','),
@@ -165,16 +202,20 @@ def central_financeira(request):
         'total_saldo': f"{total_saldo:,.2f}".replace('.', ','),
         'seg': contagem_dias["Seg"], 'ter': contagem_dias["Ter"], 'qua': contagem_dias["Qua"],
         'qui': contagem_dias["Qui"], 'sex': contagem_dias["Sex"], 'sáb': contagem_dias["Sáb"],
-        'dom': contagem_dias["Dom"]
+        'dom': contagem_dias["Dom"],
+        'w_seg': larguras["Seg"], 'w_ter': larguras["Ter"], 'w_qua': larguras["Qua"],
+        'w_qui': larguras["Qui"], 'w_sex': larguras["Sex"], 'w_sab': larguras["Sáb"],
+        'w_dom': larguras["Dom"]
     }
     return render(request, 'faturamento.html', contexto_financeiro)
+
 
 def cadastrar_barbeiro(request):
     contexto = {'msg_alerta': '', 'msg_sucesso': ''}
     if request.method == 'POST':
-        usuario = request.POST.get('username').lower().strip()
-        nome_completo = request.POST.get('first_name')
-        senha = request.POST.get('password')
+        usuario = request.POST.get('username', '').lower().strip()
+        nome_completo = request.POST.get('first_name', '')
+        senha = request.POST.get('password', '')
         if User.objects.filter(username=usuario).exists():
             contexto['msg_alerta'] = 'Este login já pertence a um profissional da rede!'
         else:
@@ -185,18 +226,49 @@ def cadastrar_barbeiro(request):
             contexto['msg_sucesso'] = f'✓ Profissional {nome_completo} credenciado com sucesso no sistema!'
     return render(request, 'cadastro_barbeiro.html', contexto)
 
+def cadastrar_cupom(request):
+    contexto = {
+        'msg_alerta': '',
+        'msg_sucesso': '',
+        'lista_cupons': CupomDesconto.objects.all().order_by('-id')
+    }
+    if request.method == 'POST':
+        codigo_digitado = request.POST.get('codigo', '').upper().strip()
+        valor_digitado_str = request.POST.get('valor_desconto', '0')
+        try:
+            valor_numero = float(valor_digitado_str)
+            if CupomDesconto.objects.filter(codigo=codigo_digitado).exists():
+                contexto['msg_alerta'] = 'Este código promocional já está ativo no sistema!'
+            else:
+                CupomDesconto.objects.create(codigo=codigo_digitado, valor_desconto=valor_numero, ativo=True)
+                contexto['msg_sucesso'] = f'✓ Cupom {codigo_digitado} com desconto de R$ {valor_numero:.2f} ativado com maestria!'
+                contexto['lista_cupons'] = CupomDesconto.objects.all().order_by('-id')
+        except ValueError:
+            contexto['msg_alerta'] = 'Formato de valor incorreto. Use números válidos!'
+    return render(request, 'cadastro_cupom.html', contexto)
+
+def disparar_whatsapp(_request, corte_id):
+    corte = get_object_or_404(Agendamento, pk=corte_id)
+    telefone_limpo = "".join(c for c in corte.cliente.last_name if c.isdigit())
+    if not telefone_limpo.startswith("55") and len(telefone_limpo) >= 10:
+        telefone_limpo = "55" + telefone_limpo
+    nome_cliente = corte.cliente.first_name if corte.cliente.first_name else corte.cliente.username
+    mensagem_texto = f"Olá, {nome_cliente}! 👑\n\nLembrete de agendamento de {corte.servico} para o dia {corte.data} às {corte.horario}! 🪒"
+    texto_codificado = mensagem_texto.replace('\n', '%0A').replace(' ', '%20').replace('!', '%21')
+    return redirect(f"https://wa.me{telefone_limpo}?text={texto_codificado}")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', pagina_inicial, name='home'),
     path('login/', pagina_login, name='login'),
     path('cadastro/', pagina_cadastro, name='cadastro'),
     path('servicos/', pagina_servicos, name='servicos'),
-path('agendamento/', pagina_agendamento, name='agendamento'),
-path('checkout/', pagina_checkout, name='checkout'),
-path('painel-barbeiro/', pagina_barbeiro, name='painel_barbeiro'),
-path('reserva-confirmada/', pagina_sucesso, name='pagina_sucesso'),
-path('disparar-zap/int:corte_id/', get_object_or_404, name='enviar_lembrete'),
-path('central-lucros/', central_financeira, name='central_financeira'),
-path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
+    path('agendamento/', pagina_agendamento, name='agendamento'),
+    path('checkout/', pagina_checkout, name='checkout'),
+    path('painel-barbeiro/', pagina_barbeiro, name='painel_barbeiro'),
+    path('reserva-confirmada/', pagina_sucesso, name='pagina_sucesso'),
+    path('central-lucros/', central_financeira, name='central_financeira'),
+    path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
+    path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
+    path('disparar-zap/<int:corte_id>/', disparar_whatsapp, name='enviar_lembrete'),
 ]
-

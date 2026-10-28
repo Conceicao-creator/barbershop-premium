@@ -1,0 +1,103 @@
+<!-- suppress HtmlUnknownTarget, HtmlUnknownAttribute, CssUnusedSymbol -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Fábrica de Cupons</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; min-height: 100vh; box-sizing: border-box; }
+        .topo-painel { text-align: center; margin-bottom: 30px; }
+        .titulo-neon { font-size: 2.3rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin: 0; }
+        .subtitulo { color: #A8A8B3; font-size: 1rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .container-cupons { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 25px; box-sizing: border-box; }
+
+        .caixa-formulario { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+
+        .grupo-input { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .grupo-input label { font-size: 0.85rem; color: #00F5D4; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .grupo-input input { background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 1rem; transition: border-color 0.3s; width: 100%; box-sizing: border-box; }
+        .grupo-input input:focus { border-color: #00F5D4; outline: none; }
+
+        .btn-neon { background-color: transparent; border: 1px solid #00F5D4; color: #00F5D4; padding: 14px; border-radius: 5px; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; width: 100%; }
+        .btn-neon:hover { background-color: #00F5D4; color: #121214; box-shadow: 0 0 15px rgba(0, 245, 212, 0.4); }
+
+        .alerta-erro { background-color: rgba(255, 107, 107, 0.1); border: 1px solid #FF6B6B; color: #FF6B6B; padding: 12px; border-radius: 5px; text-align: center; font-size: 0.9rem; margin-bottom: 20px; }
+        .alerta-sucesso { background-color: rgba(0, 245, 212, 0.1); border: 1px solid #00F5D4; color: #00F5D4; padding: 12px; border-radius: 5px; text-align: center; font-size: 0.9rem; margin-bottom: 20px; }
+
+        .tabela-container { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .titulo-tabela { font-size: 1.1rem; color: #A8A8B3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-weight: bold; text-align: center; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #00F5D4; font-size: 0.85rem; text-transform: uppercase; border-bottom: 2px solid #29292e; }
+        td { padding: 12px; border-bottom: 1px solid #29292e; font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+
+        .badge-ativo { background-color: rgba(0, 245, 212, 0.1); color: #00F5D4; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .link-voltar { color: #A8A8B3; text-decoration: none; font-size: 0.9rem; align-self: center; margin-top: 10px; transition: color 0.3s; text-align: center; display: block; }
+        .link-voltar:hover { color: #00F5D4; }
+    </style>
+</head>
+<body>
+
+    <div class="topo-painel">
+        <h1 class="titulo-neon">Fábrica de Cupons Promocionais 🎟️</h1>
+        <p class="subtitulo">Olá, Administradora Maria! Crie e gerencie códigos de desconto da rede</p>
+    </div>
+
+    <div class="container-cupons">
+
+        {% if msg_alerta %}
+            <div class="alerta-erro">⚠️ {{ msg_alerta }}</div>
+        {% endif %}
+        {% if msg_sucesso %}
+            <div class="alerta-sucesso">✓ {{ msg_sucesso }}</div>
+        {% endif %}
+
+        <div class="caixa-formulario">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="grupo-input">
+                    <label for="id_codigo">Código do Cupom (Ex: FESTA20)</label>
+                    <input type="text" id="id_codigo" name="codigo" placeholder="DIGITE_O_CODIGO" required autocomplete="off" style="text-transform: uppercase;">
+                </div>
+                <div class="grupo-input">
+                    <label for="id_valor">Valor do Desconto (R$)</label>
+                    <input type="number" id="id_valor" name="valor_desconto" step="0.01" placeholder="20.00" required>
+                </div>
+                <button type="submit" class="btn-neon">Ativar Cupom Imperial</button>
+            </form>
+        </div>
+
+        <div class="tabela-container">
+            <div class="titulo-tabela">🎟️ Cupons Registrados no Sistema</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Desconto</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cupom in lista_cupons %}
+                    <tr>
+                        <td style="font-weight: bold; color: #FFFFFF;">{{ cupom.codigo }}</td>
+                        <td style="color: #FF6B6B; font-weight: bold;">R$ {{ cupom.valor_desconto }}</td>
+                        <td><span class="badge-ativo">Ativo</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px;">Nenhum cupom ativo no reino.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/central-lucros/" class="link-voltar">← Voltar para a Central Financeira</a>
+    </div>
+
+</body>
+</html>
