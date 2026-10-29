@@ -91,45 +91,82 @@ def pagina_checkout(request):
         preco_numero = 85.00
     data_real = request.POST.get('data') or request.GET.get('data', '14/10/2026')
     horario_real = request.POST.get('horario') or request.GET.get('horario', '18:00h')
+
     saldo_atual = 15.00
     if request.user.is_authenticated:
         carteira, _ = PerfilCliente.objects.get_or_create(user=request.user)
         saldo_atual = carteira.saldo_cashback
+
+    # 🔑 O MOTOR INTEGRAL DE VALIDAÇÃO DO CUPOM PROMOCIONAL:
+    cupom_digitado = request.POST.get('cupom_promocional', '').upper().strip()
+    desconto_cupom = 0.0
+    msg_cupom_sucesso = ""
+    msg_cupom_erro = ""
+
+    if cupom_digitado:
+        try:
+            cupom_banco = CupomDesconto.objects.get(codigo=cupom_digitado, ativo=True)
+            desconto_cupom = cupom_banco.valor_desconto
+            msg_cupom_sucesso = f"✓ Cupom {cupom_digitado} aplicado! Desconto de R$ {desconto_cupom:.2f} garantido!"
+        except CupomDesconto.DoesNotExist:
+            msg_cupom_erro = "⚠️ Código promocional inválido ou já expirado!"
+
+    # 📊 CÁLCULO FINAL DO NOVO CAIXA DO CLIENTE:
+    preco_com_desconto_cupom = max(0.0, preco_numero - desconto_cupom)
+
     contexto = {
         'servico_escolhido': servico_real,
-        'preco_escolhido': f"{preco_numero:,.2f}".replace('.', ','),
-        'preco_puro': preco_numero,
+        'preco_escolhido': f"{preco_com_desconto_cupom:,.2f}".replace('.', ','),
+        'preco_puro': preco_com_desconto_cupom,
+        'preco_original': preco_numero,
         'data_escolhida': data_real,
         'horario_escolhido': horario_real,
         'saldo_real_banco': saldo_atual,
+        'cupom_codigo': cupom_digitado,
+        'desconto_cupom': desconto_cupom,
+        'msg_cupom_sucesso': msg_cupom_sucesso,
+        'msg_cupom_erro': msg_cupom_erro,
     }
-    if request.method == 'POST':
+
+    if request.method == 'POST' and 'finalizar_agendamento' in request.POST:
         if request.user.is_authenticated:
             usou_credito = request.POST.get('usou_cashback_flag') == 'sim'
-            desconto_total = 0.0
+            desconto_total_aplicado = desconto_cupom
             carteira = PerfilCliente.objects.get(user=request.user)
+
             if usou_credito:
-                desconto_total = carteira.saldo_cashback
+                desconto_total_aplicado += carteira.saldo_cashback
                 carteira.saldo_cashback = 0.0
+
             meio_escolhido = request.POST.get('meio_pagamento_ativo') or 'PIX'
-            if usou_credito:
+            if usou_credito and preco_com_desconto_cupom <= desconto_total_aplicado:
                 meio_escolhido = 'Saldo'
+
             novo_agendamento = Agendamento.objects.create(
-                cliente=request.user, servico=servico_real, barbeiro="lucas.barber", data=data_real,
-                horario=horario_real, pago=True, valor_bruto=preco_numero, desconto_aplicado=desconto_total,
+                cliente=request.user,
+                servico=servico_real,
+                barbeiro="lucas.barber",
+                data=data_real,
+                horario=horario_real,
+                pago=True,
+                valor_bruto=preco_numero,
+                desconto_applied=desconto_total_aplicado,
                 meio_pagamento=meio_escolhido
             )
             novo_agendamento.save()
-            bonus_novo = preco_numero * 0.10
+
+            bonus_novo = preco_com_desconto_cupom * 0.10
             carteira.saldo_cashback += bonus_novo
             carteira.save()
+
             email_do_cliente = request.user.email if request.user.email else "cliente@email.com"
             nome_do_cliente = request.user.first_name if request.user.first_name else request.user.username
             assunto = f"Confirmação Imperiosa - Seu lugar no trono está reservado! 🎉"
-            corpo_mensagem = f"Olá, {nome_do_cliente}!\n\nSeu agendamento foi confirmado!\n\nLink do PIX: https://tinyurl.com\n\nAtenciosamente,\nBarberShop Imperial 👑"
+            corpo_mensagem = f"Olá, {nome_do_cliente}!\n\nSeu agendamento foi confirmado com cupom!\n\nAtenciosamente,\nBarberShop Imperial 👑"
             send_mail(assunto, corpo_mensagem, 'atendimento@barbershopimperial.com.br', [email_do_cliente],
                       fail_silently=True)
             return redirect('pagina_sucesso')
+
     return render(request, 'checkout.html', contexto)
 
 

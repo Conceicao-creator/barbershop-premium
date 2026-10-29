@@ -41,6 +41,26 @@
             <div class="resumo-linha"><span>Horário:</span><span>{{ data_escolhida }} às {{ horario_escolhido }} 📅</span></div>
             <div class="resumo-linha total"><span>Total:</span><span id="valor_total">R$ {{ preco_escolhido }}</span></div>
         </div>
+                <!-- 🎟️ BOX IMPERIAL DE CUPOM PROMOCIONAL -->
+        <div style="background-color: #202024; border: 1px dashed #FF6B6B; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-sizing: border-box;">
+            <h3 style="color: #FF6B6B; margin: 0 0 10px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">🎟️ Possui um Cupom de Desconto?</h3>
+
+            <form method="POST" action="" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        {% csrf_token %}
+        <label for="id_cupom_promocional" style="display: none;">Cupom Promocional</label>
+        <div style="display: flex; gap: 10px; width: 100%;">
+            <input type="text" id="id_cupom_promocional" name="cupom_promocional" value="{{ cupom_codigo }}" placeholder="DIGITE_O_CUPOM" style="flex: 2; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; text-transform: uppercase;" autocomplete="off">
+            <button type="submit" style="flex: 1; background-color: transparent; border: 1px solid #FF6B6B; color: #FF6B6B; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.backgroundColor='rgba(255,107,107,0.1)'" onmouseout="this.style.backgroundColor='transparent'">Aplicar</button>
+        </div>
+    </form>
+
+            {% if msg_cupom_sucesso %}
+                <p style="color: #00F5D4; font-size: 0.85rem; font-weight: bold; margin: 5px 0 0 0;">{{ msg_cupom_sucesso }}</p>
+            {% endif %}
+            {% if msg_cupom_erro %}
+                <p style="color: #FF6B6B; font-size: 0.85rem; font-weight: bold; margin: 5px 0 0 0;">{{ msg_cupom_erro }}</p>
+            {% endif %}
+        </div>
 
         <div class="abas-pagamento">
             <button type="button" class="aba-btn ativa" data-alvo="pag_pix"><span>📲</span>PIX</button>
