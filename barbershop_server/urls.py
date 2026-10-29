@@ -227,6 +227,18 @@ def central_financeira(request):
     maior_volume = max(contagem_dias.values()) if max(contagem_dias.values()) > 0 else 1
     larguras = {dia: (qtd / maior_volume) * 100 for dia, qtd in contagem_dias.items()}
 
+    # 🎟️ VARREDURA IMPERIAL RECALIBRADA:
+    cupons_utilizados = []
+    for corte in todos_agendamentos:
+        if corte.desconto_aplicado > 0:
+            cupons_utilizados.append({
+                'cliente': corte.cliente.first_name if corte.cliente.first_name else corte.cliente.username,
+                'servico': corte.servico,
+                'data': corte.data,
+                'desconto': f"{corte.desconto_aplicado:,.2f}".replace('.', ',')
+            })
+
+
     contexto_financeiro = {
         'total_faturado': f"{faturamento_bruto:,.2f}".replace('.', ','),
         'total_descontos': f"{total_descontos:,.2f}".replace('.', ','),
@@ -242,7 +254,9 @@ def central_financeira(request):
         'dom': contagem_dias["Dom"],
         'w_seg': larguras["Seg"], 'w_ter': larguras["Ter"], 'w_qua': larguras["Qua"],
         'w_qui': larguras["Qui"], 'w_sex': larguras["Sex"], 'w_sab': larguras["Sáb"],
-        'w_dom': larguras["Dom"]
+        'w_dom': larguras["Dom"],
+        # 🔑 A CHAVE DA AUDITORIA ENVIADA PARA A TELA:
+        'cupons_utilizados': cupons_utilizados
     }
     return render(request, 'faturamento.html', contexto_financeiro)
 

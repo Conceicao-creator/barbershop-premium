@@ -88,6 +88,37 @@
                 <div class="grafico-linha"><div class="grafico-dia">DOM</div><div class="grafico-barra-trilho"><div class="bar-pix" id="bar_dom"></div></div><div class="grafico-quantidade">{{ dom }}</div></div>
             </div>
         </div>
+
+                <!-- 📑 HISTÓRICO REAL DE CUPONS UTILIZADOS NO REINO -->
+        <div class="grafico-container" style="margin-top: 25px; min-height: auto;">
+            <div class="bloco-titulo" style="margin-bottom: 20px; text-align: center; font-size: 0.9rem; color: #FF6B6B;">🎟️ Auditoria Fiscal: Histórico de Cupons e Descontos Resgatados</div>
+
+            <table class="tabela-grafico" style="border-spacing: 0 10px;">
+                <thead>
+                    <tr style="text-transform: uppercase; font-size: 0.75rem; color: #00F5D4; letter-spacing: 1px;">
+                        <th style="text-align: right; padding-right: 15px; width: 120px;">Cliente</th>
+                        <th style="text-align: left; padding-left: 10px;">Serviço Realizado</th>
+                        <th style="text-align: center; width: 120px;">Data</th>
+                        <th style="text-align: left; padding-left: 15px; width: 120px;">Desconto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for uso in cupons_utilizados %}
+                    <tr>
+                        <td class="col-dia" style="color: #FFFFFF;">{{ uso.cliente }}</td>
+                        <td class="col-trilho" style="background-color: transparent; border: none; padding-left: 10px; font-size: 0.95rem; color: #A8A8B3;">{{ uso.servico }}</td>
+                        <td style="text-align: center; font-size: 0.9rem; color: #A8A8B3;">{{ uso.data }}</td>
+                        <td class="col-qtd" style="color: #FF6B6B;">R$ {{ uso.desconto }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px 0;">Nenhum cupom ou desconto foi resgatado nesta semana.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
         <a href="/painel-barbeiro/" class="link-voltar">← Voltar para a Agenda de Monitoramento</a>
     </div>
 
