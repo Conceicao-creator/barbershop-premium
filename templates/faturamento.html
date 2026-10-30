@@ -52,6 +52,18 @@
             <a href="/cadastrar-barbeiro/" class="link-voltar" style="border: 1px solid #00F5D4; padding: 12px 24px; border-radius: 5px; color: #00F5D4; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin: 0; text-decoration: none; flex: 1;">🪒 Credenciar Novo Barbeiro</a>
             <a href="/fabrica-cupons/" class="link-voltar" style="border: 1px solid #FF6B6B; padding: 12px 24px; border-radius: 5px; color: #FF6B6B; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; margin: 0; text-decoration: none; flex: 1;">🎟️ Fábrica de Cupons Promocionais</a>
         </div>
+                <!-- 🪒 MENU DE SELEÇÃO IMPERIAL: FILTRO DE BARBEIROS -->
+        <div style="background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 20px; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; margin-top: 10px;">
+            <label for="id_barbeiro_filtro" style="color: #A8A8B3; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">🕵️‍♀️ Visualizar Faturamento por Profissional:</label>
+            <form method="GET" action="" style="display: flex; gap: 10px; flex: 1; max-width: 400px; width: 100%;">
+                <select id="id_barbeiro_filtro" name="barbeiro_filtro" style="flex: 2; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
+                    <option value="todos">🌍 Exibir Rede Completa (Todos)</option>
+                    <option value="lucas.barber">🪒 Lucas Barber (Premium)</option>
+                </select>
+                <button type="submit" style="flex: 1; background-color: #00F5D4; border: none; color: #121214; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 0 15px rgba(0,245,212,0.4)'" onmouseout="this.style.boxShadow='none'">Filtrar</button>
+            </form>
+        </div>
+
 
         <div class="legenda-caixa">💡 <span>LEGENDA AUDITORIA:</span> A matemática do caixa obedece à regra: Faturamento Bruto menos os Descontos / Cupons aplicados resulta no Lucro Líquido Real.</div>
         <div class="grid-principais">

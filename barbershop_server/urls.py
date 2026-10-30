@@ -194,8 +194,16 @@ def pagina_barbeiro(request):
 
 
 def central_financeira(request):
-    todos_agendamentos = Agendamento.objects.all()
+    # 🪒 FILTRO IMPERIAL: Captura o barbeiro selecionado e filtra o banco dinamicamente!
+    barbeiro_selecionado = request.GET.get('barbeiro_filtro', 'todos')
+
+    if barbeiro_selecionado == 'todos':
+        todos_agendamentos = Agendamento.objects.all()
+    else:
+        todos_agendamentos = Agendamento.objects.filter(barbeiro=barbeiro_selecionado)
+
     total_cortes = todos_agendamentos.count()
+
     faturamento_bruto = sum(corte.valor_bruto for corte in todos_agendamentos)
     total_descontos = sum(corte.desconto_aplicado for corte in todos_agendamentos)
     lucro_liquido = faturamento_bruto - total_descontos
@@ -240,6 +248,7 @@ def central_financeira(request):
 
 
     contexto_financeiro = {
+        'barbeiro_atual': barbeiro_selecionado,
         'total_faturado': f"{faturamento_bruto:,.2f}".replace('.', ','),
         'total_descontos': f"{total_descontos:,.2f}".replace('.', ','),
         'lucro_liquido': f"{lucro_liquido:,.2f}".replace('.', ','),
