@@ -262,10 +262,9 @@ def central_financeira(request):
         'qui': contagem_dias["Qui"], 'sex': contagem_dias["Sex"], 'sáb': contagem_dias["Sáb"],
         'dom': contagem_dias["Dom"],
         'w_seg': larguras["Seg"], 'w_ter': larguras["Ter"], 'w_qua': larguras["Qua"],
-        'w_qui': larguras["Qui"], 'w_sex': larguras["Sex"], 'w_sab': larguras["Sáb"],
         'w_dom': larguras["Dom"],
-        # 🔑 A CHAVE DA AUDITORIA ENVIADA PARA A TELA:
-        'cupons_utilizados': cupons_utilizados
+        'cupons_utilizados': cupons_utilizados,
+        'lista_barbeiros_banco': User.objects.filter(is_staff=True),
     }
     return render(request, 'faturamento.html', contexto_financeiro)
 

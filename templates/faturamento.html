@@ -58,7 +58,10 @@
             <form method="GET" action="" style="display: flex; gap: 10px; flex: 1; max-width: 400px; width: 100%;">
                 <select id="id_barbeiro_filtro" name="barbeiro_filtro" style="flex: 2; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
                     <option value="todos">🌍 Exibir Rede Completa (Todos)</option>
-                    <option value="lucas.barber">🪒 Lucas Barber (Premium)</option>
+                    {% for profissional in lista_barbeiros_banco %}
+                        <option value="{{ profissional.username }}">🪒 {{ profissional.first_name|default:profissional.username }}</option>
+                    {% endfor %}
+
                 </select>
                 <button type="submit" style="flex: 1; background-color: #00F5D4; border: none; color: #121214; border-radius: 5px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 0 15px rgba(0,245,212,0.4)'" onmouseout="this.style.boxShadow='none'">Filtrar</button>
             </form>
