@@ -90,20 +90,18 @@
             <button type="button" class="btn-cashback" id="btn_usar_saldo">Usar Crédito</button>
         </div>
 
-        <div class="secao-cupom">
-            <div style="flex: 1;"><label for="cupom_input" class="rotulo-invisivel">Cupom</label><input type="text" id="cupom_input" class="campo-input" style="text-transform: uppercase;" placeholder="CUPOM (Ex: RAINHA10)"></div>
-            <button type="button" class="btn-cupom" id="btn_aplicar_cupom">Aplicar</button>
-        </div>
-
-        <form method="POST" action="/checkout/">
+                <form method="POST" action="/checkout/">
             {% csrf_token %}
             <input type="hidden" name="data" value="{{ data_escolhida }}">
             <input type="hidden" name="horario" value="{{ horario_escolhido }}">
             <input type="hidden" name="servico" value="{{ servico_escolhido }}">
-            <input type="hidden" name="preco" value="{{ preco_puro }}">
+            <input type="hidden" name="preco" value="{{ preco_original }}">
+            <input type="hidden" name="cupom_promocional" value="{{ cupom_codigo }}">
             <input type="hidden" id="usou_cashback_flag" name="usou_cashback_flag" value="nao">
-            <button type="submit" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
+            <input type="hidden" id="meio_pagamento_ativo" name="meio_pagamento_ativo" value="PIX">
+            <button type="submit" name="finalizar_agendamento" value="1" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
         </form>
+
 
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
             <a href="/agendamento/" style="color: #A8A8B3; text-decoration: none; font-size: 0.9rem;">← Alterar Data ou Horário</a>
