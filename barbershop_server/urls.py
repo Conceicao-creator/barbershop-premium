@@ -33,9 +33,20 @@ if not admin.site.is_registered(CupomDesconto):
     admin.site.register(CupomDesconto, CupomDescontoAdmin)
 
 
+def pagina_servicos(request):
+    meus_cortes = []
+    saldo_cliente = "0,00"
+    if request.user.is_authenticated:
+        meus_cortes = Agendamento.objects.filter(cliente=request.user).order_by('-id')
+        carteira, _ = PerfilCliente.objects.get_or_create(user=request.user)
+        saldo_cliente = f"{carteira.saldo_cashback:,.2f}".replace('.', ',')
+    return render(request, 'servicos.html', {
+        'meus_cortes': meus_cortes,
+        'saldo_cliente': saldo_cliente
+    })
+
 def pagina_inicial(request):
     return render(request, 'home.html')
-
 
 def pagina_login(request):
     if request.method == 'POST':

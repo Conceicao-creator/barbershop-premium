@@ -1,5 +1,4 @@
-<!-- 🔑 O TIRO DE MESTRE DA SOBERANA: Bloqueia e silencia absolutamente qualquer aviso falso de arquivos ou diretórios nesta folha inteira! -->
-<!-- suppress HtmlUnknownTarget -->
+<!-- noinspection HtmlUnknownTarget -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -53,7 +52,7 @@
             </div>
             <div>
                 <p class="preco-servico">R$ 50,00</p>
-                <a href="/agendamento/?servico=Corte Fade Premium ✂️&preco=50.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+                <a href="{% url 'agendamento' %}?servico=Corte Fade Premium ✂️&preco=50.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
             </div>
         </div>
 
@@ -66,7 +65,7 @@
             </div>
             <div>
                 <p class="preco-servico">R$ 40,00</p>
-                <a href="/agendamento/?servico=Barba de Gala Imperial 🪒&preco=40.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+                <a href="{% url 'agendamento' %}?servico=Barba de Gala Imperial 🪒&preco=40.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
             </div>
         </div>
 
@@ -79,7 +78,7 @@
             </div>
             <div>
                 <p class="preco-servico">R$ 85,00</p>
-                <a href="/agendamento/?servico=Combo Imperial Premium 👑&preco=85.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+                <a href="{% url 'agendamento' %}?servico=Combo Imperial Premium 👑&preco=85.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
             </div>
         </div>
 
@@ -92,7 +91,7 @@
             </div>
             <div>
                 <p class="preco-servico">R$ 110,00</p>
-                <a href="/agendamento/?servico=Platinado Nevou de Elite 🧪&preco=110.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+                <a href="{% url 'agendamento' %}?servico=Platinado Nevou de Elite 🧪&preco=110.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
             </div>
         </div>
 
@@ -105,13 +104,59 @@
             </div>
             <div>
                 <p class="preco-servico">R$ 45,00</p>
-                <a href="/agendamento/?servico=Termo-Peeling Facial 🎭&preco=45.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+                <a href="{% url 'agendamento' %}?servico=Termo-Peeling Facial 🎭&preco=45.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 👑 PAINEL DO CLIENTE: CASHBACK E HISTÓRICO DE CORTES -->
+    <div style="width: 100%; max-width: 900px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid #29292e; padding-bottom: 15px; margin-bottom: 20px;">
+            <h2 style="color: #00F5D4; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; margin: 0;">✂️ Meu Histórico de Atendimentos</h2>
+            <div style="background-color: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; padding: 8px 16px; border-radius: 8px; color: #e9d5ff; font-weight: bold; font-size: 0.95rem;">
+                💜 Cashback Disponível: <span style="color: #00F5D4; font-size: 1.1rem;">R$ {{ saldo_cliente }}</span>
             </div>
         </div>
 
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                <thead>
+                    <tr style="color: #A8A8B3; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid #29292e;">
+                        <th style="padding: 12px 10px;">Serviço Realizado</th>
+                        <th style="padding: 12px 10px;">Data e Hora</th>
+                        <th style="padding: 12px 10px;">Pagamento</th>
+                        <th style="padding: 12px 10px; text-align: right;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for corte in meus_cortes %}
+                    <tr style="border-bottom: 1px solid #16161a; color: #FFFFFF;">
+                        <td style="padding: 14px 10px; font-weight: bold;">{{ corte.servico }}</td>
+                        <td style="padding: 14px 10px; color: #A8A8B3;">{{ corte.data }} às {{ corte.horario }}</td>
+                        <td style="padding: 14px 10px; color: #38bdf8;">{{ corte.meio_pagamento }}</td>
+                        <td style="padding: 14px 10px; text-align: right; color: #00F5D4; font-weight: bold;">R$ {{ corte.valor_bruto|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="padding: 25px 10px; text-align: center; color: #A8A8B3; font-style: italic;">
+                            Você ainda não possui cortes registrados. Escolha um serviço acima para estrear no trono! 👑
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <a href="/" class="link-sair">← Encerrar Sessão</a>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 25px 0; flex-wrap: wrap;">
+        <a href="/login/" style="color: #00F5D4; text-decoration: none; font-size: 0.9rem; font-weight: bold;">🔑 Trocar de Conta / Login</a>
+        <span style="color: #29292e;">|</span>
+        <a href="/agendamento/" style="color: #38bdf8; text-decoration: none; font-size: 0.9rem; font-weight: bold;">📅 Ir para Agendamento</a>
+        <span style="color: #29292e;">|</span>
+        <a href="/" class="link-sair" style="margin: 0;">← Encerrar Sessão (Início)</a>
+    </div>
+
 
 </body>
 </html>
