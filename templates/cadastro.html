@@ -117,40 +117,50 @@
         {% if msg_alerta %}
             <div class="mensagem-alerta">{{ msg_alerta }}</div>
         {% endif %}
-
-        <!-- 🛡️ CONFIGURAÇÃO DE ENVIO SEGURO POST -->
-        <form method="POST" action="/cadastro/">
-            {% csrf_token %}
-
-            <div class="campo-grupo">
-                <label for="nome_usuario">Nome de Usuário (Login)</label>
-                <!-- Atributo name="username" essencial para o Django -->
-                <input type="text" id="nome_usuario" name="username" class="campo-input" placeholder="Ex: joao.barber" required>
+            {% if msg_sucesso %}
+            <div style="background-color: rgba(0, 245, 212, 0.15); border: 1px solid #00F5D4; color: #00F5D4; padding: 20px; border-radius: 8px; margin-bottom: 18px; font-size: 0.95rem; font-weight: bold; text-align: center;">
+                {{ msg_sucesso }}<br>
+                <a href="/login/?novo_usuario={{ usuario_criado }}" style="background-color: #00F5D4; color: #121214; text-decoration: none; padding: 10px 20px; border-radius: 6px; display: inline-block; margin-top: 15px; font-weight: bold;">Ir para o Login como {{ usuario_criado }} →</a>
             </div>
+        {% else %}
 
-            <div class="campo-grupo">
-                <label for="nome_completo">Nome Completo</label>
-                <input type="text" id="nome_completo" name="first_name" class="campo-input" placeholder="Seu nome e sobrenome" required>
-            </div>
+            {% if msg_erro %}
+                <div style="background-color: rgba(255, 107, 107, 0.15); border: 1px solid #FF6B6B; color: #FF6B6B; padding: 14px; border-radius: 8px; margin-bottom: 18px; font-size: 0.92rem; font-weight: bold; text-align: center;">
+                    {{ msg_erro }}
+                </div>
+            {% endif %}
 
-            <div class="campo-grupo">
-                <label for="whatsapp">WhatsApp (Para Lembretes 📲)</label>
-                <!-- Atributo name="whatsapp" -->
-                <input type="tel" id="whatsapp" name="whatsapp" class="campo-input" placeholder="(11) 99999-9999" required>
-            </div>
+            <form method="POST" action="/cadastro/">
+                {% csrf_token %}
 
-            <div class="campo-grupo">
-                <label for="email">E-mail de Acesso</label>
-                <input type="email" id="email" name="email" class="campo-input" placeholder="exemplo@email.com" required>
-            </div>
+                <div class="campo-grupo">
+                    <label for="nome_usuario">Nome de Usuário / Login (Ex: bruno.silva)</label>
+                    <input type="text" id="nome_usuario" name="username" class="campo-input" placeholder="Use um login único" required>
+                </div>
 
-            <div class="campo-grupo">
-                <label for="senha">Criar Senha Secreta</label>
-                <input type="password" id="senha" name="password" class="campo-input" placeholder="••••••••" required>
-            </div>
+                <div class="campo-grupo">
+                    <label for="nome_completo">Nome Completo</label>
+                    <input type="text" id="nome_completo" name="first_name" class="campo-input" placeholder="Seu nome e sobrenome" required>
+                </div>
 
-            <button type="submit" class="botao-finalizar">Finalizar Cadastro</button>
-        </form>
+                <div class="campo-grupo">
+                    <label for="whatsapp">WhatsApp (Para Lembretes 📲)</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" class="campo-input" placeholder="(11) 99999-9999" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="email">E-mail de Acesso</label>
+                    <input type="email" id="email" name="email" class="campo-input" placeholder="exemplo@email.com" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="senha">Criar Senha Secreta</label>
+                    <input type="password" id="senha" name="password" class="campo-input" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="botao-finalizar">Finalizar Cadastro</button>
+            </form>
+        {% endif %}
 
         <a href="/login/" class="link-alternativo">Já tem uma conta? Faça login</a>
     </div>

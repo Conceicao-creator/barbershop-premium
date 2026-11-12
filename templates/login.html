@@ -126,6 +126,8 @@
                 <label for="username">Nome de Usuário</label>
                 <!-- O segredo está no name="username" -->
                 <input type="text" id="username" name="username" class="campo-input" placeholder="Seu usuário (Ex: maria)" required>
+                <input type="text" name="username" class="campo-input" value="{{ request.GET.novo_usuario|default:'' }}" placeholder="Seu nome de usuário" autocomplete="new-password" required>
+
             </div>
 
             <div class="campo-grupo">
@@ -140,6 +142,18 @@
         <a href="/cadastro/" class="link-alternativo">Não tem uma conta? Cadastre-se aqui</a>
         <a href="/" class="link-voltar">← Voltar para a entrada</a>
     </div>
+    <script>
+    const params = new URLSearchParams(window.location.search);
+    const novoUser = params.get('novo_usuario');
+    if (novoUser) {
+        setTimeout(() => {
+            const campoUser = document.querySelector('input[name="username"]');
+            const campoPass = document.querySelector('input[name="password"]');
+            if (campoUser) campoUser.value = novoUser;
+            if (campoPass) campoPass.value = '';
+        }, 100);
+    }
+</script>
 
 </body>
 </html>

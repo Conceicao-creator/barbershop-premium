@@ -90,7 +90,7 @@
             <button type="button" class="btn-cashback" id="btn_usar_saldo">Usar Crédito</button>
         </div>
 
-                <form method="POST" action="/checkout/">
+                        <form method="POST" action="/checkout/">
             {% csrf_token %}
             <input type="hidden" name="data" value="{{ data_escolhida }}">
             <input type="hidden" name="horario" value="{{ horario_escolhido }}">
@@ -99,8 +99,24 @@
             <input type="hidden" name="cupom_promocional" value="{{ cupom_codigo }}">
             <input type="hidden" id="usou_cashback_flag" name="usou_cashback_flag" value="nao">
             <input type="hidden" id="meio_pagamento_ativo" name="meio_pagamento_ativo" value="PIX">
+
+            <!-- 🪒 SELETOR DE BARBEIRO PARA O CLIENTE -->
+            <div style="margin-top: 18px; text-align: left; background-color: #16161a; border: 1px solid #29292e; border-radius: 8px; padding: 14px;">
+                <label for="id_barbeiro_escolhido" style="display: block; color: #00F5D4; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                    🪒 Escolha o Profissional de sua Preferência:
+                </label>
+                <select id="id_barbeiro_escolhido" name="barbeiro_escolhido" style="width: 100%; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
+                    {% for barbeiro in lista_barbeiros %}
+                        <option value="{{ barbeiro.username }}">✂️ {{ barbeiro.first_name|default:barbeiro.username }}</option>
+                    {% empty %}
+                        <option value="lucas.barber">✂️ Lucas Barber (Premium)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
             <button type="submit" name="finalizar_agendamento" value="1" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
         </form>
+
 
 
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">

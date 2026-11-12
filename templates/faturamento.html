@@ -67,6 +67,26 @@
             </form>
         </div>
 
+                <!-- 🎯 META DE FATURAMENTO MENSAL COM BARRA NEON -->
+        <div style="background-color: #202024; border: 1px solid #00F5D4; border-radius: 10px; padding: 20px 25px; width: 100%; box-sizing: border-box; box-shadow: 0 0 20px rgba(0, 245, 212, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                <span style="color: #00F5D4; font-size: 0.95rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">
+                    🎯 Meta Mensal Imperial: R$ {{ meta_mensal }}
+                </span>
+                <span style="color: #FFFFFF; font-size: 0.9rem; font-weight: bold;">
+                    {% if porcentagem_meta >= 100 %}
+                        🏆 META BATIDA COM SUCESSO! (100%)
+                    {% else %}
+                        Progresso: <span style="color: #00F5D4;">{{ porcentagem_meta }}%</span> | Faltam <span style="color: #FF6B6B;">R$ {{ falta_meta }}</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div style="width: 100%; background-color: #121214; height: 18px; border-radius: 9px; overflow: hidden; border: 1px solid #29292e;">
+                <div id="barra_progresso_meta" data-meta="{{ porcentagem_meta }}" style="background: linear-gradient(90deg, #a855f7, #00F5D4); height: 100%; width: 0; transition: width 0.8s ease; box-shadow: 0 0 12px rgba(0, 245, 212, 0.6);"></div>
+            </div>
+        </div>
+
+
 
         <div class="legenda-caixa">💡 <span>LEGENDA AUDITORIA:</span> A matemática do caixa obedece à regra: Faturamento Bruto menos os Descontos / Cupons aplicados resulta no Lucro Líquido Real.</div>
         <div class="grid-principais">
@@ -157,4 +177,10 @@ document.getElementById('bar_qui').style.width = ((dados.qui / maiorValor) * 100
 document.getElementById('bar_sex').style.width = ((dados.sex / maiorValor) * 100) + '%';
 document.getElementById('bar_sab').style.width = ((dados.sab / maiorValor) * 100) + '%';
 document.getElementById('bar_dom').style.width = ((dados.dom / maiorValor) * 100) + '%';
+
+    const barraMeta = document.getElementById('barra_progresso_meta');
+    if (barraMeta) {
+        barraMeta.style.width = barraMeta.getAttribute('data-meta') + '%';
+    }
+
 </script>
