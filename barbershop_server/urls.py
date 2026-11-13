@@ -5,6 +5,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.contrib.auth import authenticate, login as auth_login
+import csv
+from django.http import HttpResponse
+
 
 
 # CODIGO DE SEGURANCA PARA IMPORTACAO DOS MODELOS DO BANCO:
@@ -338,6 +341,30 @@ def cancelar_corte(request, agendamento_id):
             corte.delete()
     return redirect('servicos')
 
+def exportar_caixa(request):
+    response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
+    response['Content-Disposition'] = 'attachment; filename="relatorio_caixa_barbershop.csv"'
+
+    writer = csv.writer(response, delimiter=';')
+    writer.writerow(['ID', 'Data', 'Horario', 'Cliente', 'Barbeiro', 'Servico', 'Pagamento', 'Valor Bruto (R$)', 'Desconto (R$)', 'Lucro Liquido (R$)'])
+
+    for corte in Agendamento.objects.all().order_by('-id'):
+        nome_cliente = corte.cliente.first_name or corte.cliente.username
+        liquido = corte.valor_bruto - corte.desconto_aplicado
+        writer.writerow([
+            corte.id,
+            corte.data,
+            corte.horario,
+            nome_cliente,
+            corte.barbeiro,
+            corte.servico,
+            corte.meio_pagamento,
+            f"{corte.valor_bruto:.2f}".replace('.', ','),
+            f"{corte.desconto_aplicado:.2f}".replace('.', ','),
+            f"{liquido:.2f}".replace('.', ',')
+        ])
+
+    return response
 
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
@@ -356,4 +383,6 @@ urlpatterns = [
     path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
     path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
     path('cancelar-corte/<int:agendamento_id>/', cancelar_corte, name='cancelar_corte'),
+    path('exportar-caixa/', exportar_caixa, name='exportar_caixa'),
+
 ]
