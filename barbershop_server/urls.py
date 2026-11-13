@@ -243,6 +243,10 @@ def central_financeira(request):
     meta_mensal = 2500.00
     porcentagem_meta = min(100, int((lucro_liquido / meta_mensal) * 100)) if meta_mensal > 0 else 0
     falta_meta = max(0.0, meta_mensal - lucro_liquido)
+    avaliacoes_validas = [c.avaliacao for c in todos_agendamentos if c.avaliacao > 0]
+    total_avaliacoes = len(avaliacoes_validas)
+    media_avaliacao = f"{(sum(avaliacoes_validas) / total_avaliacoes):.1f}".replace('.', ',') if total_avaliacoes > 0 else "5,0"
+
 
     contexto_financeiro = {
         'barbeiro_atual': barbeiro_selecionado,
@@ -266,6 +270,8 @@ def central_financeira(request):
         'meta_mensal': f"{meta_mensal:,.2f}".replace('.', ','),
         'porcentagem_meta': porcentagem_meta,
         'falta_meta': f"{falta_meta:,.2f}".replace('.', ','),
+        'media_avaliacao': media_avaliacao,
+        'total_avaliacoes': total_avaliacoes,
 
     }
     return render(request, 'faturamento.html', contexto_financeiro)
