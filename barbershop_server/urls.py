@@ -297,20 +297,22 @@ def cadastrar_cupom(request):
     msg_sucesso = ""
     msg_erro = ""
     if request.method == 'POST':
-        codigo = request.POST.get('codigo_cupom', '').upper().strip()
+        codigo = request.POST.get('codigo', '').upper().strip()
         valor = request.POST.get('valor_desconto', '0.00')
         try:
             valor_num = float(valor)
             if CupomDesconto.objects.filter(codigo=codigo).exists():
-                msg_erro = f"O cupom {codigo} ja esta cadastrado na fabrica!"
+                msg_erro = f"O cupom {codigo} já está cadastrado na fábrica!"
             else:
                 CupomDesconto.objects.create(codigo=codigo, valor_desconto=valor_num, ativo=True)
-                msg_sucesso = f"Cupom {codigo} de R$ {valor_num:.2f} fabricado com sucesso!"
+                msg_sucesso = f"✓ Cupom {codigo} de R$ {valor_num:.2f} fabricado com sucesso!"
         except ValueError:
-            msg_erro = "Digite um valor de desconto numerico valido!"
+            msg_erro = "Digite um valor de desconto numérico válido!"
 
-    cupons_ativos = CupomDesconto.objects.filter(ativo=True)
-    return render(request, 'fabrica_cupons.html', {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro, 'cupons_ativos': cupons_ativos})
+        lista_cupons = CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('-id')
+
+        return render(request, 'cadastro_cupom.html', {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro, 'lista_cupons': lista_cupons})
+
 
 
 def disparar_zap(request, agendamento_id):
@@ -366,6 +368,13 @@ def exportar_caixa(request):
 
     return response
 
+def avaliar_corte(request, agendamento_id, nota):
+    if request.user.is_authenticated and 1 <= nota <= 5:
+        corte = Agendamento.objects.filter(id=agendamento_id, cliente=request.user).first()
+        if corte:
+            corte.avaliacao = nota
+            corte.save()
+    return redirect('servicos')
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
 urlpatterns = [
@@ -384,5 +393,5 @@ urlpatterns = [
     path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
     path('cancelar-corte/<int:agendamento_id>/', cancelar_corte, name='cancelar_corte'),
     path('exportar-caixa/', exportar_caixa, name='exportar_caixa'),
-
+    path('avaliar-corte/<int:agendamento_id>/<int:nota>/', avaliar_corte, name='avaliar_corte'),
 ]

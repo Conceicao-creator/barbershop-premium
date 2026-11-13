@@ -119,14 +119,20 @@
             </div>
         </div>
 
-        <div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                <div style="overflow-x: auto;">
+            <style>
+                .estrela-ativa { text-decoration: none; color: #FFD700; }
+                .estrela-inativa { text-decoration: none; color: #3f3f46; }
+            </style>
+
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
                 <thead>
                     <tr style="color: #A8A8B3; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid #29292e;">
                         <th style="padding: 12px 10px;">Serviço Realizado</th>
                         <th style="padding: 12px 10px;">Data e Hora</th>
                         <th style="padding: 12px 10px;">Pagamento</th>
                         <th style="padding: 12px 10px; text-align: right;">Valor</th>
+                        <th style="padding: 12px 10px; text-align: center;">Avaliação</th>
                         <th style="padding: 12px 10px; text-align: center;">Ação</th>
                     </tr>
                 </thead>
@@ -137,11 +143,19 @@
                         <td style="padding: 14px 10px; color: #A8A8B3;">{{ corte.data }} às {{ corte.horario }}</td>
                         <td style="padding: 14px 10px; color: #38bdf8;">{{ corte.meio_pagamento }}</td>
                         <td style="padding: 14px 10px; text-align: right; color: #00F5D4; font-weight: bold;">R$ {{ corte.valor_bruto|floatformat:2 }}</td>
+                        <td style="padding: 14px 10px; text-align: center; font-size: 1.1rem; letter-spacing: 2px;">
+                            <a href="/avaliar-corte/{{ corte.id }}/1/" class="{% if corte.avaliacao >= 1 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                            <a href="/avaliar-corte/{{ corte.id }}/2/" class="{% if corte.avaliacao >= 2 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                            <a href="/avaliar-corte/{{ corte.id }}/3/" class="{% if corte.avaliacao >= 3 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                            <a href="/avaliar-corte/{{ corte.id }}/4/" class="{% if corte.avaliacao >= 4 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                            <a href="/avaliar-corte/{{ corte.id }}/5/" class="{% if corte.avaliacao >= 5 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                        </td>
                         <td style="padding: 14px 10px; text-align: center;">
                             <a href="/cancelar-corte/{{ corte.id }}/" onclick="return confirm('Deseja realmente cancelar este agendamento?');" style="background-color: rgba(255, 107, 107, 0.15); border: 1px solid #FF6B6B; color: #FF6B6B; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.8rem; font-weight: bold; display: inline-block;">
                                 ✖ Cancelar
                             </a>
                         </td>
+
                     </tr>
                     {% empty %}
                     <tr>

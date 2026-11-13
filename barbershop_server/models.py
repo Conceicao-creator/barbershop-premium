@@ -13,6 +13,8 @@ class Agendamento(models.Model):
     desconto_aplicado = models.FloatField(default=0.00)
     # 🔑 A NOVA CHAVE DO CAIXA: Guarda se foi PIX, Cartão, Dinheiro ou Saldo!
     meio_pagamento = models.CharField(max_length=20, default='PIX')
+    avaliacao = models.IntegerField(default=0)
+
 
     def __str__(self):
         return f"{self.cliente.username} - {self.servico} ({self.meio_pagamento})"
