@@ -85,7 +85,7 @@
         <div id="pag_saldo" class="conteudo-pagamento">
             <p style="color: #A8A8B3; font-size: 0.95rem; margin: 0;">Use seus créditos reais imperiais acumulados.</p>
             <div style="background-color:#121214; padding:12px; border-radius:5px; border:1px solid #29292e; margin-top:10px; margin-bottom:10px;">
-                <span style="color:#00F5D4; font-size:1.5rem; font-weight:bold;" id="saldo_exibicao">R$ 15,00</span>
+            <span style="color:#00F5D4; font-size:1.5rem; font-weight:bold;" id="saldo_exibicao">R$ {{ saldo_real_banco|floatformat:2 }}</span>
             </div>
             <button type="button" class="btn-cashback" id="btn_usar_saldo">Usar Crédito</button>
         </div>

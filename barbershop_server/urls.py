@@ -331,6 +331,15 @@ def disparar_zap(request, agendamento_id):
     return redirect(url_zap)
 
 
+def cancelar_corte(request, agendamento_id):
+    if request.user.is_authenticated:
+        corte = Agendamento.objects.filter(id=agendamento_id, cliente=request.user).first()
+        if corte:
+            corte.delete()
+    return redirect('servicos')
+
+
+
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -346,4 +355,5 @@ urlpatterns = [
     path('central-lucros/', central_financeira, name='central_financeira'),
     path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
     path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
+    path('cancelar-corte/<int:agendamento_id>/', cancelar_corte, name='cancelar_corte'),
 ]
