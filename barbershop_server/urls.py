@@ -279,20 +279,27 @@ def central_financeira(request):
 
 # CADASTRO DE BARBEIRO COM IS_STAFF AUTOMATICO:
 def cadastrar_barbeiro(request):
-    contexto_barbeiro = {'msg_alerta': '', 'msg_sucesso': ''}
+    msg_sucesso = ""
+    msg_erro = ""
     if request.method == 'POST':
-        usuario = request.POST.get('username', '').lower().strip()
-        nome_completo = request.POST.get('first_name', '')
+        usuario = request.POST.get('username', '').lower().strip().replace(' ', '.')
+        nome = request.POST.get('first_name', '').strip()
         senha = request.POST.get('password', '')
+
         if User.objects.filter(username=usuario).exists():
-            contexto_barbeiro['msg_alerta'] = 'Este login já pertence a um profissional da rede!'
+            msg_erro = f"⚠️ O login '{usuario}' já está em uso por outro profissional!"
+        elif User.objects.filter(is_staff=True, first_name__iexact=nome).exists():
+            msg_erro = f"⚠️ Já existe um barbeiro cadastrado com o nome '{nome}'!"
         else:
-            novo_barbeiro = User.objects.create_user(username=usuario, password=senha, first_name=nome_completo)
-            novo_barbeiro.is_staff = True
+            novo_barbeiro = User.objects.create_user(
+                username=usuario,
+                first_name=nome,
+                password=senha,
+                is_staff=True
+            )
             novo_barbeiro.save()
-            PerfilCliente.objects.get_or_create(user=novo_barbeiro)
-            contexto_barbeiro['msg_sucesso'] = f'✓ Profissional {nome_completo} credenciado com sucesso no sistema!'
-    return render(request, 'cadastro_barbeiro.html', contexto_barbeiro)
+            msg_sucesso = f"✓ Profissional {nome} ({usuario}) credenciado com sucesso!"
+    return render(request, 'cadastro_barbeiro.html', {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro})
 
 
 # FABRICA DE CUPONS PROMOCIONAIS:

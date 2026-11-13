@@ -66,7 +66,9 @@
                 <select id="id_barbeiro_filtro" name="barbeiro_filtro" style="flex: 2; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
                     <option value="todos">🌍 Exibir Rede Completa (Todos)</option>
                     {% for profissional in lista_barbeiros_banco %}
-                        <option value="{{ profissional.username }}">🪒 {{ profissional.first_name|default:profissional.username }}</option>
+                        <option value="{{ profissional.username }}" {% if request.GET.barbeiro_filtro == profissional.username %}selected{% endif %}>
+                            🪒 {{ profissional.first_name|default:profissional.username }}
+                        </option>
                     {% endfor %}
 
                 </select>
