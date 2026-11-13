@@ -154,6 +154,16 @@ def pagina_checkout(request):
                     meio_escolhido = 'Saldo'
 
                 barbeiro_escolhido = request.POST.get('barbeiro_escolhido') or 'lucas.barber'
+                horario_ocupado = Agendamento.objects.filter(
+                    barbeiro=barbeiro_escolhido,
+                    data=data_real,
+                    horario=horario_real
+                ).exists()
+
+                if horario_ocupado:
+                    contexto[
+                        'msg_cupom_erro'] = f"⚠️ O profissional {barbeiro_escolhido} já possui um corte agendado em {data_real} às {horario_real}. Escolha outro barbeiro ou horário!"
+                    return render(request, 'checkout.html', contexto)
 
                 novo_agendamento = Agendamento.objects.create(
                     cliente=request.user,
