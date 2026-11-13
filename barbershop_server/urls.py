@@ -277,6 +277,9 @@ def cadastrar_barbeiro(request):
 
 
 # FABRICA DE CUPONS PROMOCIONAIS:
+from urllib.parse import quote
+
+
 def cadastrar_cupom(request):
     msg_sucesso = ""
     msg_erro = ""
@@ -293,24 +296,44 @@ def cadastrar_cupom(request):
         except ValueError:
             msg_erro = "Digite um valor de desconto numerico valido!"
 
-        cupons_ativos = CupomDesconto.objects.filter(ativo=True)
-        return render(request, 'fabrica_cupons.html',
-                  {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro, 'cupons_ativos': cupons_ativos})
+    cupons_ativos = CupomDesconto.objects.filter(ativo=True)
+    return render(request, 'fabrica_cupons.html', {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro, 'cupons_ativos': cupons_ativos})
+
+
+def disparar_zap(request, agendamento_id):
+    corte = Agendamento.objects.filter(id=agendamento_id).first()
+    if not corte:
+        return redirect('painel_barbeiro')
+
+    nome_cliente = corte.cliente.first_name or corte.cliente.username
+    telefone_bruto = ''.join(filter(str.isdigit, corte.cliente.last_name or ''))
+    if telefone_bruto and not telefone_bruto.startswith('55'):
+        telefone_bruto = '55' + telefone_bruto
+
+    mensagem = (
+        f"Olá, {nome_cliente}! 👑\n\n"
+        f"Passando para lembrar do seu agendamento na *BarberShop Premium*:\n"
+        f"✂️ *Serviço:* {corte.servico}\n"
+        f"📅 *Data:* {corte.data} às {corte.horario}\n\n"
+        f"Te aguardamos no trono!"
+    )
+    url_zap = f"https://wa.me{telefone_bruto}?text={quote(mensagem)}"
+    return redirect(url_zap)
 
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
-
 urlpatterns = [
-path('admin/', admin.site.urls),
-path('', pagina_inicial, name='home'),
-path('login/', pagina_login, name='login'),
-path('cadastro/', pagina_cadastro, name='cadastro'),
-path('servicos/', pagina_servicos, name='servicos'),
-path('agendamento/', pagina_agendamento, name='agendamento'),
-path('checkout/', pagina_checkout, name='checkout'),
-path('painel-barbeiro/', pagina_barbeiro, name='painel_barbeiro'),
-path('reserva-confirmada/', pagina_sucesso, name='pagina_sucesso'),
-path('central-lucros/', central_financeira, name='central_financeira'),
-path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
-path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
+    path('admin/', admin.site.urls),
+    path('', pagina_inicial, name='home'),
+    path('login/', pagina_login, name='login'),
+    path('cadastro/', pagina_cadastro, name='cadastro'),
+    path('servicos/', pagina_servicos, name='servicos'),
+    path('agendamento/', pagina_agendamento, name='agendamento'),
+    path('checkout/', pagina_checkout, name='checkout'),
+    path('painel-barbeiro/', pagina_barbeiro, name='painel_barbeiro'),
+    path('disparar-zap/<int:agendamento_id>/', disparar_zap, name='disparar_zap'),
+    path('reserva-confirmada/', pagina_sucesso, name='pagina_sucesso'),
+    path('central-lucros/', central_financeira, name='central_financeira'),
+    path('cadastrar-barbeiro/', cadastrar_barbeiro, name='cadastrar_barbeiro'),
+    path('fabrica-cupons/', cadastrar_cupom, name='cadastrar_cupom'),
 ]
