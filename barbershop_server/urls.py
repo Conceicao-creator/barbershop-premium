@@ -389,6 +389,13 @@ def avaliar_corte(request, agendamento_id, nota):
             corte.save()
     return redirect('servicos')
 
+def manifesto_pwa(request):
+    return render(request, 'manifest.json', content_type='application/json')
+
+def service_worker_pwa(request):
+    return render(request, 'sw.js', content_type='application/javascript')
+
+
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -407,4 +414,7 @@ urlpatterns = [
     path('cancelar-corte/<int:agendamento_id>/', cancelar_corte, name='cancelar_corte'),
     path('exportar-caixa/', exportar_caixa, name='exportar_caixa'),
     path('avaliar-corte/<int:agendamento_id>/<int:nota>/', avaliar_corte, name='avaliar_corte'),
+    path('manifest.json', manifesto_pwa, name='manifesto_pwa'),
+    path('sw.js', service_worker_pwa, name='service_worker_pwa'),
+
 ]

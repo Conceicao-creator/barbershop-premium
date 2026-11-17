@@ -72,6 +72,15 @@
             100% { transform: translateY(0px); }
         }
     </style>
+        <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#00F5D4">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
+    </script>
+
 </head>
 <body>
 

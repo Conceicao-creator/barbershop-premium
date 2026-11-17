@@ -1,0 +1,15 @@
+{
+  "name": "BarberShop Premium ERP",
+  "short_name": "BarberShop 👑",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121214",
+  "theme_color": "#00F5D4",
+  "icons": [
+    {
+      "src": "https://flaticon.com",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
