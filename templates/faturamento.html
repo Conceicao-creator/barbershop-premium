@@ -78,20 +78,19 @@
             </form>
         </div>
 
-                    <!-- 👁️ RADAR DE AUDIÊNCIA DO APP -->
+        <!-- 👁️ RADAR DE AUDIÊNCIA DO APP -->
         <div style="background-color: #202024; border: 1px solid #38bdf8; border-radius: 10px; padding: 20px 25px; width: 100%; box-sizing: border-box;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                 <span style="color: #38bdf8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">👁️ Radar de Audiência do App</span>
                 <span style="color: #FFFFFF; font-weight: bold;">Total: {{ total_visitas }} acessos | Hoje: <span style="color: #00F5D4;">{{ visitas_hoje }}</span></span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #A8A8B3; margin-bottom: 6px;">
-                <span>📱 Celular (Mobile): {{ visitas_celular }} ({{ pct_celular }}%)</span>
-                <span>💻 Computador (Web): {{ visitas_pc }}</span>
+                <span style="color: #00F5D4;">📱 Celular (Mobile): {{ visitas_celular }} ({{ pct_celular }}%)</span>
+                <span style="color: #38bdf8;">💻 Computador (Web): {{ visitas_pc }}</span>
             </div>
-            <div style="width: 100%; background-color: #121214; border-radius: 8px; height: 12px; overflow: hidden; border: 1px solid #29292e;">
-                <progress value="{{ pct_celular }}" max="100" style="width: 100%; height: 12px; accent-color: #00F5D4;"></progress>
-            </div>
+            <progress value="{{ pct_celular }}" max="100" style="width: 100%; height: 14px; border-radius: 8px; accent-color: #00F5D4; background-color: #38bdf8;"></progress>
         </div>
+
 
 
                 <!-- 🎯 META DE FATURAMENTO MENSAL COM BARRA NEON -->
@@ -209,5 +208,8 @@ document.getElementById('bar_dom').style.width = ((dados.dom / maiorValor) * 100
     if (barraMeta) {
         barraMeta.style.width = barraMeta.getAttribute('data-meta') + '%';
     }
+            const barraMobile = document.getElementById('barra_mobile_js');
+        if (barraMobile) { barraMobile.style.width = barraMobile.getAttribute('data-largura') + '%'; }
+
 
 </script>
