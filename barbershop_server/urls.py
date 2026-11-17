@@ -7,6 +7,7 @@ from datetime import datetime
 from django.contrib.auth import authenticate, login as auth_login
 import csv
 from django.http import HttpResponse
+from django.conf import settings
 
 
 
@@ -394,6 +395,11 @@ def manifesto_pwa(request):
 
 def service_worker_pwa(request):
     return render(request, 'sw.js', content_type='application/javascript')
+def icone_app_pwa(request):
+    caminho_icone = settings.BASE_DIR / 'templates' / 'icone_app.png'
+    with open(caminho_icone, 'rb') as f:
+        return HttpResponse(f.read(), content_type='image/png')
+
 
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
@@ -416,5 +422,6 @@ urlpatterns = [
     path('avaliar-corte/<int:agendamento_id>/<int:nota>/', avaliar_corte, name='avaliar_corte'),
     path('manifest.json', manifesto_pwa, name='manifesto_pwa'),
     path('sw.js', service_worker_pwa, name='service_worker_pwa'),
+    path('icone_app.png', icone_app_pwa, name='icone_app_pwa'),
 
 ]
