@@ -19,17 +19,21 @@ from barbershop_server.models import Agendamento, PerfilCliente, CupomDesconto
 
 
 # ROTAS INICIAIS E SIMULACOES DE PAGINAS:
-def pagina_inicial(request):
-    def pagina_inicial(request):
+def registrar_visita(request):
+    if not request.session.get('visita_registrada'):
         agente = request.META.get('HTTP_USER_AGENT', '').lower()
         tipo_aparelho = 'Celular' if ('mobile' in agente or 'android' in agente or 'iphone' in agente) else 'Computador'
         VisitaApp.objects.create(dispositivo=tipo_aparelho)
-        return render(request, 'home.html')
+        request.session['visita_registrada'] = True
 
+
+def pagina_inicial(request):
+    registrar_visita(request)
     return render(request, 'home.html')
 
 
 def pagina_login(request):
+    registrar_visita(request)
     if request.method == 'POST':
         usuario_digitado = request.POST.get('username')
         senha_digitada = request.POST.get('password')
@@ -74,8 +78,18 @@ def pagina_cadastro(request):
     return render(request, 'cadastro.html', contexto)
 
 
+def pagina_servicos(request):
+    registrar_visita(request)
 
 def pagina_servicos(request):
+    def registrar_visita(request):
+        if not request.session.get('visita_registrada'):
+            agente = request.META.get('HTTP_USER_AGENT', '').lower()
+            tipo_aparelho = 'Celular' if (
+                        'mobile' in agente or 'android' in agente or 'iphone' in agente) else 'Computador'
+            VisitaApp.objects.create(dispositivo=tipo_aparelho)
+            request.session['visita_registrada'] = True
+
     meus_cortes = []
     saldo_cliente = "0,00"
     if request.user.is_authenticated:
