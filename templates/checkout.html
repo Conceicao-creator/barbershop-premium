@@ -113,9 +113,10 @@
                     {% endfor %}
                 </select>
             </div>
-
+                            <input type="hidden" name="meio_pagamento_ativo" id="input_meio_pagamento" value="PIX">
             <button type="submit" name="finalizar_agendamento" value="1" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
-        </form>
+
+                        </form>
 
 
 
@@ -128,14 +129,24 @@
     </div>
 
     <script>
-        const abas = document.querySelectorAll('.aba-btn');
+                const abas = document.querySelectorAll('.aba-btn');
         const conteudos = document.querySelectorAll('.conteudo-pagamento');
+        const campoMeioPagamento = document.getElementById('input_meio_pagamento');
+
         abas.forEach(aba => {
             aba.addEventListener('click', () => {
                 abas.forEach(a => a.classList.remove('ativa'));
                 conteudos.forEach(c => c.classList.remove('ativo'));
                 aba.classList.add('ativa');
-                document.getElementById(aba.getAttribute('data-alvo')).classList.add('ativo');
+                const alvo = aba.getAttribute('data-alvo');
+                document.getElementById(alvo).classList.add('ativo');
+
+                if (campoMeioPagamento) {
+                    if (alvo === 'pag_cartao') campoMeioPagamento.value = 'Cartão';
+                    else if (alvo === 'pag_dinheiro') campoMeioPagamento.value = 'Dinheiro';
+                    else if (alvo === 'pag_saldo') campoMeioPagamento.value = 'Saldo';
+                    else campoMeioPagamento.value = 'PIX';
+                }
             });
         });
 

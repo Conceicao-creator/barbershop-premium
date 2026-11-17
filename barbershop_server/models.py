@@ -15,9 +15,13 @@ class Agendamento(models.Model):
     meio_pagamento = models.CharField(max_length=20, default='PIX')
     avaliacao = models.IntegerField(default=0)
 
-
     def __str__(self):
         return f"{self.cliente.username} - {self.servico} ({self.meio_pagamento})"
+
+class VisitaApp(models.Model):
+    data_hora = models.DateTimeField(auto_now_add=True)
+    dispositivo = models.CharField(max_length=20, default='Computador')
+
 
 # 💰 TABELA DA CARTEIRA DIGITAL DE CASHBACK
 class PerfilCliente(models.Model):

@@ -8,6 +8,9 @@ from django.contrib.auth import authenticate, login as auth_login
 import csv
 from django.http import HttpResponse
 from django.conf import settings
+from django.utils import timezone
+from .models import Agendamento, CupomDesconto, VisitaApp
+
 
 
 
@@ -17,6 +20,12 @@ from barbershop_server.models import Agendamento, PerfilCliente, CupomDesconto
 
 # ROTAS INICIAIS E SIMULACOES DE PAGINAS:
 def pagina_inicial(request):
+    def pagina_inicial(request):
+        agente = request.META.get('HTTP_USER_AGENT', '').lower()
+        tipo_aparelho = 'Celular' if ('mobile' in agente or 'android' in agente or 'iphone' in agente) else 'Computador'
+        VisitaApp.objects.create(dispositivo=tipo_aparelho)
+        return render(request, 'home.html')
+
     return render(request, 'home.html')
 
 
@@ -248,6 +257,12 @@ def central_financeira(request):
     total_avaliacoes = len(avaliacoes_validas)
     media_avaliacao = f"{(sum(avaliacoes_validas) / total_avaliacoes):.1f}".replace('.', ',') if total_avaliacoes > 0 else "5,0"
 
+    total_visitas = VisitaApp.objects.count()
+    visitas_hoje = VisitaApp.objects.filter(data_hora__date=timezone.now().date()).count()
+    visitas_celular = VisitaApp.objects.filter(dispositivo='Celular').count()
+    visitas_pc = VisitaApp.objects.filter(dispositivo='Computador').count()
+    pct_celular = int((visitas_celular / total_visitas) * 100) if total_visitas > 0 else 0
+
 
     contexto_financeiro = {
         'barbeiro_atual': barbeiro_selecionado,
@@ -273,6 +288,11 @@ def central_financeira(request):
         'falta_meta': f"{falta_meta:,.2f}".replace('.', ','),
         'media_avaliacao': media_avaliacao,
         'total_avaliacoes': total_avaliacoes,
+        'total_visitas': total_visitas,
+        'visitas_hoje': visitas_hoje,
+        'visitas_celular': visitas_celular,
+        'visitas_pc': visitas_pc,
+        'pct_celular': pct_celular,
 
     }
     return render(request, 'faturamento.html', contexto_financeiro)
