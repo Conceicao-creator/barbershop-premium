@@ -24,22 +24,26 @@
             animation: flutuar 3s ease-in-out infinite;
         }
 
-        .logo-texto {
-            font-size: 3.5rem;
+                .logo-texto {
+            font-size: clamp(1.7rem, 7vw, 3.5rem);
             font-weight: 800;
             color: #00F5D4; /* Verde Neon / Ciano Elétrico */
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: clamp(1px, 0.8vw, 4px);
             margin: 0;
+            padding: 0 15px;
+            line-height: 1.2;
             text-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
         }
 
         .subtitulo {
-            font-size: 1.2rem;
+            font-size: clamp(0.85rem, 3.5vw, 1.2rem);
             color: #A8A8B3;
             margin-top: 10px;
+            padding: 0 20px;
             letter-spacing: 2px;
         }
+
 
         .botao-neon {
             margin-top: 40px;
