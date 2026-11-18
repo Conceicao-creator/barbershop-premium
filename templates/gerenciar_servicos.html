@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Catálogo de Serviços</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; margin: 0; min-height: 100vh; box-sizing: border-box; }
+        .container { width: 100%; max-width: 750px; background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 30px; box-sizing: border-box; }
+        h1 { color: #00F5D4; text-transform: uppercase; font-size: 1.6rem; margin-top: 0; text-align: center; }
+        .campo { width: 100%; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; margin-bottom: 12px; box-sizing: border-box; }
+        .btn-salvar { width: 100%; background-color: #00F5D4; color: #121214; border: none; border-radius: 5px; padding: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .item-servico { display: flex; justify-content: space-between; align-items: center; background-color: #16161a; border: 1px solid #29292e; border-radius: 8px; padding: 14px 18px; margin-top: 10px; gap: 10px; flex-wrap: wrap; }
+        .btn-remover { background: transparent; border: 1px solid #FF6B6B; color: #FF6B6B; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✂️ Catálogo de Serviços & Preços</h1>
+        {% if msg_sucesso %}
+            <p style="color: #00F5D4; font-weight: bold; text-align: center;">{{ msg_sucesso }}</p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <label for="nome_srv" style="display:none;">Nome do Serviço</label>
+            <input type="text" id="nome_srv" name="nome" class="campo" placeholder="Nome do Serviço (ex: Corte Degradê + Barba)" required>
+
+            <label for="desc_srv" style="display:none;">Descrição</label>
+            <input type="text" id="desc_srv" name="descricao" class="campo" placeholder="Descrição curta (ex: Acabamento na navalha e toalha quente)">
+
+            <div style="display: flex; gap: 10px;">
+                <label for="preco_srv" style="display:none;">Preço</label>
+                <input type="number" step="0.01" id="preco_srv" name="preco" class="campo" placeholder="Preço (ex: 75.00)" required style="flex: 2;">
+
+                <label for="icone_srv" style="display:none;">Ícone</label>
+                <select id="icone_srv" name="icone" class="campo" style="flex: 1;">
+                    <option value="✂️">✂️ Tesoura</option>
+                    <option value="🪒">🪒 Navalha</option>
+                    <option value="👑">👑 Combo VIP</option>
+                    <option value="🧴">🧴 Tratamento</option>
+                    <option value="🧔">🧔 Barba</option>
+                </select>
+            </div>
+
+            <button type="submit" name="criar_servico" value="1" class="btn-salvar">+ Adicionar Serviço ao Catálogo</button>
+        </form>
+
+        <h3 style="color: #A8A8B3; text-transform: uppercase; font-size: 0.9rem; margin-top: 30px;">Serviços Cadastrados no Sistema</h3>
+        {% for s in servicos %}
+            <div class="item-servico">
+                <div>
+                    <strong style="color: #FFFFFF;">{{ s.icone }} {{ s.nome }}</strong>
+                    <div style="color: #A8A8B3; font-size: 0.85rem;">{{ s.descricao }}</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="color: #00F5D4; font-weight: bold;">R$ {{ s.preco|floatformat:2 }}</span>
+                    <form method="POST" style="margin: 0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="remover_id" value="{{ s.id }}">
+                        <button type="submit" class="btn-remover">Remover</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <p style="color: #A8A8B3; font-size: 0.9rem;">Nenhum serviço extra cadastrado ainda. Os serviços padrão continuam ativos!</p>
+        {% endfor %}
+
+        <div style="text-align: center; margin-top: 25px;">
+            <a href="/central-lucros/" style="color: #A8A8B3; text-decoration: none;">← Voltar ao Painel de Bordo Imperial</a>
+        </div>
+    </div>
+</body>
+</html>

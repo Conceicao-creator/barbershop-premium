@@ -39,3 +39,13 @@ class CupomDesconto(models.Model):
 
     def __str__(self):
         return f"{self.codigo} - R$ {self.valor_desconto:.2f}"
+
+class ServicoBarbearia(models.Model):
+    nome = models.CharField(max_length=100)
+    descricao = models.CharField(max_length=255, blank=True, default='Atendimento premium com toalha quente e acabamento.')
+    preco = models.FloatField(default=50.00)
+    icone = models.CharField(max_length=10, default='✂️')
+    ativo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.icone} {self.nome} - R$ {self.preco:.2f}"

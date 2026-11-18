@@ -107,6 +107,22 @@
                 <a href="{% url 'agendamento' %}?servico=Termo-Peeling Facial 🎭&preco=45.00" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
             </div>
         </div>
+
+                <!-- Serviços Dinâmicos Cadastrados pela Administradora -->
+        {% for extra in servicos_extras %}
+        <div class="cartao-servico">
+            <div>
+                <div class="emoji-servico">{{ extra.icone }}</div>
+                <h3 class="nome-servico">{{ extra.nome }}</h3>
+                <p class="descricao-servico">{{ extra.descricao }}</p>
+            </div>
+            <div>
+                <p class="preco-servico">R$ {{ extra.preco|floatformat:2 }}</p>
+                <a href="{% url 'agendamento' %}?servico={{ extra.nome|urlencode }}&preco={{ extra.preco|stringformat:'.2f' }}" style="text-decoration: none;"><button class="botao-escolher">Selecionar</button></a>
+            </div>
+        </div>
+        {% endfor %}
+
     </div>
 
     <!-- 👑 PAINEL DO CLIENTE: CASHBACK E HISTÓRICO DE CORTES -->

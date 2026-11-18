@@ -10,6 +10,8 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.utils import timezone
 from .models import Agendamento, CupomDesconto, VisitaApp
+from .models import Agendamento, CupomDesconto, VisitaApp, ServicoBarbearia
+
 
 
 
@@ -98,8 +100,10 @@ def pagina_servicos(request):
         saldo_cliente = f"{carteira.saldo_cashback:,.2f}".replace('.', ',')
     return render(request, 'servicos.html', {
         'meus_cortes': meus_cortes,
-        'saldo_cliente': saldo_cliente
+        'saldo_cliente': saldo_cliente,
+        'servicos_extras': ServicoBarbearia.objects.filter(ativo=True),
     })
+
 def pagina_agendamento(request):
     return render(request, 'agendamento.html')
 
@@ -435,6 +439,24 @@ def icone_app_pwa(request):
     with open(caminho_icone, 'rb') as f:
         return HttpResponse(f.read(), content_type='image/png')
 
+def gerenciar_servicos(request):
+    if not request.user.is_authenticated or request.user.username != 'maria':
+        return redirect('login')
+    msg_sucesso = ''
+    if request.method == 'POST':
+        if request.POST.get('remover_id'):
+            ServicoBarbearia.objects.filter(id=request.POST.get('remover_id')).delete()
+            msg_sucesso = '✓ Serviço removido do catálogo!'
+        elif request.POST.get('criar_servico'):
+            ServicoBarbearia.objects.create(
+                nome=request.POST.get('nome', '').strip(),
+                descricao=request.POST.get('descricao', '').strip() or 'Atendimento premium BarberShop.',
+                preco=float(request.POST.get('preco', 50)),
+                icone=request.POST.get('icone', '✂️')
+            )
+            msg_sucesso = '✓ Novo serviço adicionado com sucesso!'
+    servicos = ServicoBarbearia.objects.all().order_by('-id')
+    return render(request, 'gerenciar_servicos.html', {'servicos': servicos, 'msg_sucesso': msg_sucesso})
 
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
@@ -458,5 +480,6 @@ urlpatterns = [
     path('manifest.json', manifesto_pwa, name='manifesto_pwa'),
     path('sw.js', service_worker_pwa, name='service_worker_pwa'),
     path('icone_app.png', icone_app_pwa, name='icone_app_pwa'),
+    path('gerenciar-servicos/', gerenciar_servicos, name='gerenciar_servicos'),
 
 ]
