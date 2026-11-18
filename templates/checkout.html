@@ -37,7 +37,11 @@
 
         <div class="resumo-box">
             <div class="resumo-linha"><span>Serviço:</span><span style="color: #FFFFFF; font-weight: bold;">{{ servico_escolhido }}</span></div>
-            <div class="resumo-linha"><span>Barbeiro:</span><span>Lucas Silva 🪒</span></div>
+        <div class="resumo-linha">
+        <span>Barbeiro:</span>
+        <span id="resumo_barbeiro">{{ barbeiro_escolhido|default:"Qualquer Profissional ✂️" }}</span>
+
+        </div>
             <div class="resumo-linha"><span>Horário:</span><span>{{ data_escolhida }} às {{ horario_escolhido }} 📅</span></div>
             <div class="resumo-linha total"><span>Total:</span><span id="valor_total">R$ {{ preco_escolhido }}</span></div>
         </div>
@@ -106,13 +110,18 @@
                 <label for="id_barbeiro_escolhido" style="display: block; color: #00F5D4; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
                     🪒 Escolha o Profissional de sua Preferência:
                 </label>
-                <select id="id_barbeiro_escolhido" name="barbeiro_escolhido" style="width: 100%; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
+                <select id="id_barbeiro_escolhido" name="barbeiro_escolhido" onchange="document.getElementById('resumo_barbeiro').innerText = this.options[this.selectedIndex].text;" style="width: 100%; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; cursor: pointer;">
                     {% for barbeiro in lista_barbeiros %}
                         <option value="{{ barbeiro.username }}">✂️ {{ barbeiro.first_name|default:barbeiro.username }}</option>
                     {% empty %}
                         <option value="lucas.barber">✂️ Lucas Barber (Premium)</option>
                     {% endfor %}
                 </select>
+                <script>
+                    const selBarbeiro = document.getElementById('id_barbeiro_escolhido');
+                    if (selBarbeiro) document.getElementById('resumo_barbeiro').innerText = selBarbeiro.options[selBarbeiro.selectedIndex].text;
+                </script>
+
             </div>
                             <input type="hidden" name="meio_pagamento_ativo" id="input_meio_pagamento" value="PIX">
             <button type="submit" name="finalizar_agendamento" value="1" class="botao-concluir" style="margin-top: 15px;">Confirmar Agendamento</button>
@@ -130,7 +139,7 @@
     </div>
 
     <script>
-                const abas = document.querySelectorAll('.aba-btn');
+        const abas = document.querySelectorAll('.aba-btn');
         const conteudos = document.querySelectorAll('.conteudo-pagamento');
         const campoMeioPagamento = document.getElementById('input_meio_pagamento');
 

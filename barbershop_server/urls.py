@@ -11,6 +11,8 @@ from django.conf import settings
 from django.utils import timezone
 from .models import Agendamento, CupomDesconto, VisitaApp
 from .models import Agendamento, CupomDesconto, VisitaApp, ServicoBarbearia
+from django.urls import path, reverse
+
 
 
 
@@ -96,6 +98,14 @@ def pagina_servicos(request):
     saldo_cliente = "0,00"
     if request.user.is_authenticated:
         meus_cortes = Agendamento.objects.filter(cliente=request.user).order_by('-id')
+        from datetime import datetime
+        hoje = datetime.now().date()
+        for corte in meus_cortes:
+            try:
+                data_corte = datetime.strptime(corte.data.strip(), '%d/%m/%Y').date()
+                corte.expirado = data_corte < hoje
+            except ValueError:
+                corte.expirado = False
         carteira, _ = PerfilCliente.objects.get_or_create(user=request.user)
         saldo_cliente = f"{carteira.saldo_cashback:,.2f}".replace('.', ',')
     return render(request, 'servicos.html', {
@@ -195,6 +205,18 @@ def pagina_checkout(request):
                     contexto[
                         'msg_cupom_erro'] = f"⚠️ O profissional {barbeiro_escolhido} já possui um corte agendado em {data_real} às {horario_real}. Escolha outro barbeiro ou horário!"
                     return render(request, 'checkout.html', contexto)
+
+                ja_existe = Agendamento.objects.filter(
+                    data=data_real.strip(), horario=horario_real.strip(), cliente=request.user
+                ) | Agendamento.objects.filter(
+                    data=data_real.strip(), horario=horario_real.strip(), barbeiro=barbeiro_escolhido
+                )
+
+                if ja_existe.exists():
+                    contexto['msg_cupom_erro'] = f'⚠️ Horário indisponível! Já existe agendamento para {data_real} às {horario_real}.'
+                    return render(request, 'checkout.html', contexto)
+
+
 
                 novo_agendamento = Agendamento.objects.create(
                     cliente=request.user,
@@ -427,7 +449,7 @@ def avaliar_corte(request, agendamento_id, nota):
         if corte:
             corte.avaliacao = nota
             corte.save()
-    return redirect('servicos')
+    return redirect(f"{reverse('servicos')}#historico")
 
 def manifesto_pwa(request):
     return render(request, 'manifest.json', content_type='application/json')

@@ -126,6 +126,8 @@
     </div>
 
     <!-- 👑 PAINEL DO CLIENTE: CASHBACK E HISTÓRICO DE CORTES -->
+    <div id="historico" style="width: 100%; max-width: 900px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+
     <div style="width: 100%; max-width: 900px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
 
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 1px solid #29292e; padding-bottom: 15px; margin-bottom: 20px;">
@@ -133,6 +135,7 @@
             <div style="background-color: rgba(168, 85, 247, 0.15); border: 1px solid #a855f7; padding: 8px 16px; border-radius: 8px; color: #e9d5ff; font-weight: bold; font-size: 0.95rem;">
                 💜 Cashback Disponível: <span style="color: #00F5D4; font-size: 1.1rem;">R$ {{ saldo_cliente }}</span>
             </div>
+
         </div>
 
                 <div style="overflow-x: auto;">
@@ -154,24 +157,30 @@
                 </thead>
                 <tbody>
                     {% for corte in meus_cortes %}
-                    <tr style="border-bottom: 1px solid #16161a; color: #FFFFFF;">
-                        <td style="padding: 14px 10px; font-weight: bold;">{{ corte.servico }}</td>
-                        <td style="padding: 14px 10px; color: #A8A8B3;">{{ corte.data }} às {{ corte.horario }}</td>
-                        <td style="padding: 14px 10px; color: #38bdf8;">{{ corte.meio_pagamento }}</td>
-                        <td style="padding: 14px 10px; text-align: right; color: #00F5D4; font-weight: bold;">R$ {{ corte.valor_bruto|floatformat:2 }}</td>
-                        <td style="padding: 14px 10px; text-align: center; font-size: 1.1rem; letter-spacing: 2px;">
-                            <a href="/avaliar-corte/{{ corte.id }}/1/" class="{% if corte.avaliacao >= 1 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
-                            <a href="/avaliar-corte/{{ corte.id }}/2/" class="{% if corte.avaliacao >= 2 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
-                            <a href="/avaliar-corte/{{ corte.id }}/3/" class="{% if corte.avaliacao >= 3 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
-                            <a href="/avaliar-corte/{{ corte.id }}/4/" class="{% if corte.avaliacao >= 4 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
-                            <a href="/avaliar-corte/{{ corte.id }}/5/" class="{% if corte.avaliacao >= 5 %}estrela-ativa{% else %}estrela-inativa{% endif %}">★</a>
+                    <tr style="border-bottom: 1px solid #29292e;">
+                        <td style="padding: 12px 10px; color: #FFFFFF; font-weight: bold;">{{ corte.servico }}</td>
+                        <td style="padding: 12px 10px; color: #A8A8B3;">{{ corte.data }} às {{ corte.horario }}</td>
+                        <td style="padding: 12px 10px; text-align: center;">
+                            <span style="background-color: rgba(0, 245, 212, 0.1); color: #00F5D4; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">{{ corte.meio_pagamento }}</span>
                         </td>
-                        <td style="padding: 14px 10px; text-align: center;">
-                            <a href="/cancelar-corte/{{ corte.id }}/" onclick="return confirm('Deseja realmente cancelar este agendamento?');" style="background-color: rgba(255, 107, 107, 0.15); border: 1px solid #FF6B6B; color: #FF6B6B; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 0.8rem; font-weight: bold; display: inline-block;">
-                                ✖ Cancelar
-                            </a>
-                        </td>
+                        <td style="padding: 12px 10px; text-align: center;">
+                        <div style="display: inline-flex; gap: 3px;">
+                        {% for estrela in "12345" %}
+                        <a href="/avaliar-corte/{{ corte.id }}/{{ estrela }}/" class="{% if corte.avaliacao >= estrela|add:0 %}estrela-ativa{% else %}estrela-inativa{% endif %}" style="font-size: 1.1rem; cursor: pointer;">★</a>
+                        {% endfor %}
+                        </div>
+                    </td>
 
+                        <td style="padding: 12px 10px; text-align: center;">
+                            {% if corte.expirado %}
+                                <span style="color: #A8A8B3; font-size: 0.8rem; border: 1px solid #29292e; padding: 6px 10px; border-radius: 5px; display: inline-block;">✓ Realizado</span>
+                            {% else %}
+                                <form method="POST" action="/cancelar-corte/{{ corte.id }}/" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="background: transparent; border: 1px solid #FF6B6B; color: #FF6B6B; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;">X Cancelar</button>
+                                </form>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -181,6 +190,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+
             </table>
 
         </div>
@@ -193,7 +203,7 @@
         <span style="color: #29292e;">|</span>
         <a href="/" class="link-sair" style="margin: 0;">← Encerrar Sessão (Início)</a>
     </div>
-
+</div>
 
 </body>
 </html>
