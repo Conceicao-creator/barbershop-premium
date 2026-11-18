@@ -321,10 +321,11 @@ def cadastrar_barbeiro(request):
         nome = request.POST.get('first_name', '').strip()
         senha = request.POST.get('password', '')
 
-        if User.objects.filter(username=usuario).exists():
-            msg_erro = f"⚠️ O login '{usuario}' já está em uso por outro profissional!"
-        elif User.objects.filter(is_staff=True, first_name__iexact=nome).exists():
-            msg_erro = f"⚠️ Já existe um barbeiro cadastrado com o nome '{nome}'!"
+        if not usuario:
+            contexto['msg_erro'] = '⚠️ Digite um nome de usuário válido!'
+        elif User.objects.filter(username=usuario).exists():
+            contexto['msg_erro'] = f"⚠️ O login '{usuario}' já está em uso. Escolha outro!"
+
         else:
             novo_barbeiro = User.objects.create_user(
                 username=usuario,
