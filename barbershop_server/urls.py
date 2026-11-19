@@ -391,6 +391,9 @@ def cadastrar_cupom(request):
 
 
 def disparar_zap(request, agendamento_id):
+    from urllib.parse import quote
+    from django.http import HttpResponseRedirect
+
     corte = Agendamento.objects.filter(id=agendamento_id).first()
     if not corte:
         return redirect('painel_barbeiro')
@@ -407,9 +410,13 @@ def disparar_zap(request, agendamento_id):
         f"📅 *Data:* {corte.data} às {corte.horario}\n\n"
         f"Te aguardamos no trono!"
     )
-    url_zap = f"https://wa.me{telefone_bruto}?text={quote(mensagem)}"
-    return redirect(url_zap)
+    texto_codificado = quote(mensagem, encoding='utf-8')
+    if telefone_bruto:
+        url_zap = f"https://whatsapp.com{telefone_bruto}&text={texto_codificado}"
+    else:
+        url_zap = f"https://whatsapp.com{texto_codificado}"
 
+    return HttpResponseRedirect(url_zap)
 
 def cancelar_corte(request, agendamento_id):
     if request.user.is_authenticated:
