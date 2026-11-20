@@ -100,7 +100,7 @@
             <input type="hidden" name="data" value="{{ data_escolhida }}">
             <input type="hidden" name="horario" value="{{ horario_escolhido }}">
             <input type="hidden" name="servico" value="{{ servico_escolhido }}">
-            <input type="hidden" name="preco" value="{{ preco_original }}">
+            <input type="hidden" name="preco" value="{{ preco_original|stringformat:'.2f' }}">
             <input type="hidden" name="cupom_promocional" value="{{ cupom_codigo }}">
             <input type="hidden" id="usou_cashback_flag" name="usou_cashback_flag" value="nao">
             <input type="hidden" id="meio_pagamento_ativo" name="meio_pagamento_ativo" value="PIX">

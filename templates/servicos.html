@@ -126,7 +126,7 @@
     </div>
 
     <!-- 👑 PAINEL DO CLIENTE: CASHBACK E HISTÓRICO DE CORTES -->
-    <div id="historico" style="width: 100%; max-width: 900px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+    <div id="historico" style="width: 100%; max-width: 1100px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
 
     <div style="width: 100%; max-width: 900px; margin: 35px auto 20px auto; background-color: #202024; border: 1px solid #29292e; border-radius: 12px; padding: 25px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
 
@@ -138,19 +138,21 @@
 
         </div>
 
+
                 <div style="overflow-x: auto;">
             <style>
                 .estrela-ativa { text-decoration: none; color: #FFD700; }
                 .estrela-inativa { text-decoration: none; color: #3f3f46; }
             </style>
 
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
-                <thead>
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1.05rem;">
+                        <thead>
                     <tr style="color: #A8A8B3; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid #29292e;">
                         <th style="padding: 12px 10px;">Serviço Realizado</th>
                         <th style="padding: 12px 10px;">Data e Hora</th>
-                        <th style="padding: 12px 10px;">Pagamento</th>
+                        <th style="padding: 12px 10px; text-align: center;">Pagamento</th>
                         <th style="padding: 12px 10px; text-align: right;">Valor</th>
+                        <th style="padding: 12px 10px; text-align: right;">Líquido a Pagar</th>
                         <th style="padding: 12px 10px; text-align: center;">Avaliação</th>
                         <th style="padding: 12px 10px; text-align: center;">Ação</th>
                     </tr>
@@ -163,14 +165,19 @@
                         <td style="padding: 12px 10px; text-align: center;">
                             <span style="background-color: rgba(0, 245, 212, 0.1); color: #00F5D4; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">{{ corte.meio_pagamento }}</span>
                         </td>
+                        <td style="padding: 12px 10px; text-align: right; color: #A8A8B3;">
+                            R$ {{ corte.valor_bruto|floatformat:2 }}
+                        </td>
+                        <td style="padding: 12px 10px; text-align: right; color: #00F5D4; font-weight: bold;">
+                            R$ {{ corte.valor_final|floatformat:2 }}
+                        </td>
                         <td style="padding: 12px 10px; text-align: center;">
-                        <div style="display: inline-flex; gap: 3px;">
-                        {% for estrela in "12345" %}
-                        <a href="/avaliar-corte/{{ corte.id }}/{{ estrela }}/" class="{% if corte.avaliacao >= estrela|add:0 %}estrela-ativa{% else %}estrela-inativa{% endif %}" style="font-size: 1.1rem; cursor: pointer;">★</a>
-                        {% endfor %}
-                        </div>
-                    </td>
-
+                            <div style="display: inline-flex; gap: 3px;">
+                                {% for estrela in "12345" %}
+                                <a href="/avaliar-corte/{{ corte.id }}/{{ estrela }}/" class="{% if corte.avaliacao >= estrela|add:0 %}estrela-ativa{% else %}estrela-inativa{% endif %}" style="font-size: 1.1rem; cursor: pointer;">★</a>
+                                {% endfor %}
+                            </div>
+                        </td>
                         <td style="padding: 12px 10px; text-align: center;">
                             {% if corte.expirado %}
                                 <span style="color: #A8A8B3; font-size: 0.8rem; border: 1px solid #29292e; padding: 6px 10px; border-radius: 5px; display: inline-block;">✓ Realizado</span>
@@ -184,7 +191,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" style="padding: 25px 10px; text-align: center; color: #A8A8B3; font-style: italic;">
+                        <td colspan="7" style="padding: 25px 10px; text-align: center; color: #A8A8B3; font-style: italic;">
                             Você ainda não possui cortes registrados. Escolha um serviço acima para estrear no trono! 👑
                         </td>
                     </tr>

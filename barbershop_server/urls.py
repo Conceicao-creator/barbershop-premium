@@ -101,11 +101,13 @@ def pagina_servicos(request):
         from datetime import datetime
         hoje = datetime.now().date()
         for corte in meus_cortes:
+            corte.valor_final = max(0.0, corte.valor_bruto - corte.desconto_aplicado)
             try:
                 data_corte = datetime.strptime(corte.data.strip(), '%d/%m/%Y').date()
                 corte.expirado = data_corte < hoje
             except ValueError:
                 corte.expirado = False
+
         carteira, _ = PerfilCliente.objects.get_or_create(user=request.user)
         saldo_cliente = f"{carteira.saldo_cashback:,.2f}".replace('.', ',')
     return render(request, 'servicos.html', {
@@ -138,7 +140,7 @@ def pagina_checkout(request):
         servico_real = request.POST.get('servico') or request.GET.get('servico', 'Combo Imperial Premium')
         preco_real_str = request.POST.get('preco') or request.GET.get('preco', '85.00')
         try:
-            preco_numero = float(preco_real_str)
+            preco_numero = float(str(preco_real_str).replace(',', '.'))
         except Exception:
             preco_numero = 85.00
 
@@ -182,13 +184,17 @@ def pagina_checkout(request):
 
         if request.method == 'POST' and 'finalizar_agendamento' in request.POST:
             if request.user.is_authenticated:
-                usou_credito = request.POST.get('usou_cashback_flag') == 'sim'
+                meio_escolhido = request.POST.get('meio_pagamento_ativo') or 'PIX'
+                usou_credito = (request.POST.get('usou_cashback_flag') == 'sim') or (meio_escolhido == 'Saldo')
                 desconto_total_aplicado = desconto_cupom
                 carteira = PerfilCliente.objects.get(user=request.user)
 
+
                 if usou_credito:
-                    desconto_total_aplicado += carteira.saldo_cashback
-                    carteira.saldo_cashback = 0.0
+                    abatimento_saldo = min(preco_com_desconto_cupom, carteira.saldo_cashback)
+                    desconto_total_aplicado += abatimento_saldo
+                    carteira.saldo_cashback = round(carteira.saldo_cashback - abatimento_saldo, 2)
+
 
                 meio_escolhido = request.POST.get('meio_pagamento_ativo') or 'PIX'
                 if usou_credito and preco_com_desconto_cupom <= desconto_total_aplicado:
@@ -392,7 +398,6 @@ def cadastrar_cupom(request):
 
 def disparar_zap(request, agendamento_id):
     from urllib.parse import quote
-    from django.http import HttpResponseRedirect
 
     corte = Agendamento.objects.filter(id=agendamento_id).first()
     if not corte:
@@ -412,11 +417,12 @@ def disparar_zap(request, agendamento_id):
     )
     texto_codificado = quote(mensagem, encoding='utf-8')
     if telefone_bruto:
-        url_zap = f"https://whatsapp.com{telefone_bruto}&text={texto_codificado}"
+        url_zap = f"https://wa.me/{telefone_bruto}?text={texto_codificado}"
     else:
-        url_zap = f"https://whatsapp.com{texto_codificado}"
+        url_zap = f"https://wa.me/?text={texto_codificado}"
 
-    return HttpResponseRedirect(url_zap)
+    return redirect(url_zap)
+
 
 def cancelar_corte(request, agendamento_id):
     if request.user.is_authenticated:
