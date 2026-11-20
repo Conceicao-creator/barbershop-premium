@@ -193,6 +193,68 @@
                 </table>
             </div>
 
+                    <!-- 👥 TABELA DE CLIENTES CADASTRADOS COM NUMERAÇÃO AUTOMÁTICA -->
+        <div class="bloco-grafico" style="margin-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <div class="bloco-titulo" style="font-size: 0.95rem; color: #00F5D4; margin: 0;">
+                    👥 Base Oficial de Clientes Cadastrados
+                </div>
+                <span style="background-color: rgba(0, 245, 212, 0.15); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
+                    Total de Clientes: {{ total_clientes }}
+                </span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="tabela-grafico" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-transform: uppercase; font-size: 0.75rem; color: #00F5D4; letter-spacing: 1px; border-bottom: 1px solid #29292e;">
+                            <th style="text-align: center; padding: 10px; width: 60px;">Nº</th>
+                            <th style="text-align: left; padding: 10px;">Nome do Cliente</th>
+                            <th style="text-align: left; padding: 10px;">Login</th>
+                            <th style="text-align: center; padding: 10px;">WhatsApp</th>
+                            <th style="text-align: left; padding: 10px;">E-mail</th>
+                            <th style="text-align: center; padding: 10px;">Cadastro</th>
+                            <th style="text-align: right; padding: 10px;">Cashback</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cli in lista_clientes_cadastrados %}
+                        <tr style="border-bottom: 1px solid #29292e;">
+                            <td style="text-align: center; padding: 12px 10px; font-weight: bold; color: #00F5D4;">
+                                #{{ cli.numero }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #FFFFFF; font-weight: bold;">
+                                {{ cli.nome }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #A8A8B3; font-size: 0.9rem;">
+                                {{ cli.usuario }}
+                            </td>
+                            <td style="text-align: center; padding: 12px 10px; color: #FFFFFF; font-size: 0.9rem;">
+                                {{ cli.whatsapp }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #A8A8B3; font-size: 0.9rem;">
+                                {{ cli.email }}
+                            </td>
+                            <td style="text-align: center; padding: 12px 10px; color: #A8A8B3; font-size: 0.85rem;">
+                                {{ cli.data_cadastro }}
+                            </td>
+                            <td style="text-align: right; padding: 12px 10px; color: #a855f7; font-weight: bold;">
+                                R$ {{ cli.cashback }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px 0;">
+                                Nenhum cliente cadastrado até o momento.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
         </div>
 
         <a href="/painel-barbeiro/" class="link-voltar">← Voltar para a Agenda de Monitoramento</a>

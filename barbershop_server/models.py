@@ -26,7 +26,7 @@ class VisitaApp(models.Model):
 # 💰 TABELA DA CARTEIRA DIGITAL DE CASHBACK
 class PerfilCliente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
-    saldo_cashback = models.FloatField(default=15.00)
+    saldo_cashback = models.FloatField(default=5.00)
 
     def __str__(self):
         return f"Carteira de {self.user.username} - Saldo: R$ {self.saldo_cashback:.2f}"

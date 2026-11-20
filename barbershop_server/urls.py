@@ -239,7 +239,7 @@ def pagina_checkout(request):
                 novo_agendamento.save()
 
 
-                bonus_novo = preco_com_desconto_cupom * 0.10
+                bonus_novo = preco_com_desconto_cupom * 0.00
                 carteira.saldo_cashback += bonus_novo
                 carteira.save()
 
@@ -316,6 +316,21 @@ def central_financeira(request):
     visitas_pc = VisitaApp.objects.filter(dispositivo='Computador').count()
     pct_celular = int((visitas_celular / total_visitas) * 100) if total_visitas > 0 else 0
 
+    usuarios_clientes = User.objects.filter(is_staff=False, is_superuser=False).order_by('id')
+    lista_clientes_cadastrados = []
+    for indice, cli in enumerate(usuarios_clientes, start=1):
+        carteira_cli, _ = PerfilCliente.objects.get_or_create(user=cli)
+        lista_clientes_cadastrados.append({
+            'numero': indice,
+            'nome': cli.first_name if cli.first_name else cli.username,
+            'usuario': cli.username,
+            'whatsapp': cli.last_name if cli.last_name else 'Não informado',
+            'email': cli.email if cli.email else '-',
+            'cashback': f"{carteira_cli.saldo_cashback:,.2f}".replace('.', ','),
+            'data_cadastro': cli.date_joined.strftime('%d/%m/%Y') if cli.date_joined else '-',
+        })
+
+
 
     contexto_financeiro = {
         'barbeiro_atual': barbeiro_selecionado,
@@ -346,6 +361,8 @@ def central_financeira(request):
         'visitas_celular': visitas_celular,
         'visitas_pc': visitas_pc,
         'pct_celular': pct_celular,
+        'lista_clientes_cadastrados': lista_clientes_cadastrados,
+        'total_clientes': len(lista_clientes_cadastrados),
 
     }
     return render(request, 'faturamento.html', contexto_financeiro)
