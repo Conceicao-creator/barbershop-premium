@@ -82,6 +82,30 @@ def pagina_cadastro(request):
     return render(request, 'cadastro.html', contexto)
 
 
+def pagina_redefinir_senha(request):
+    contexto = {'msg_erro': '', 'msg_sucesso': '', 'usuario_confirmado': ''}
+    if request.method == 'POST':
+        usuario = request.POST.get('username', '').lower().strip()
+        whatsapp_digitado = ''.join(filter(str.isdigit, request.POST.get('whatsapp', '')))
+        nova_senha = request.POST.get('nova_senha', '').strip()
+
+        user_encontrado = User.objects.filter(username=usuario).first()
+        if not user_encontrado:
+            contexto['msg_erro'] = '⚠️ Usuário não encontrado! Verifique seu login.'
+        else:
+            whatsapp_banco = ''.join(filter(str.isdigit, user_encontrado.last_name or ''))
+            if whatsapp_digitado and whatsapp_digitado == whatsapp_banco:
+                user_encontrado.set_password(nova_senha)
+                user_encontrado.save()
+                contexto['usuario_confirmado'] = usuario
+                contexto['msg_sucesso'] = f'✓ Senha atualizada com sucesso para {usuario}!'
+            else:
+                contexto['msg_erro'] = '⚠️ O WhatsApp informado não confere com o cadastro deste usuário.'
+    return render(request, 'redefinir_senha.html', contexto)
+
+
+
+
 def pagina_servicos(request):
     registrar_visita(request)
 
@@ -528,6 +552,27 @@ def gerenciar_servicos(request):
     servicos = ServicoBarbearia.objects.all().order_by('-id')
     return render(request, 'gerenciar_servicos.html', {'servicos': servicos, 'msg_sucesso': msg_sucesso})
 
+    def pagina_redefinir_senha(request):
+        contexto = {'msg_erro': '', 'msg_sucesso': '', 'usuario_confirmado': ''}
+        if request.method == 'POST':
+            usuario = request.POST.get('username', '').lower().strip()
+            whatsapp_digitado = ''.join(filter(str.isdigit, request.POST.get('whatsapp', '')))
+            nova_senha = request.POST.get('nova_senha', '').strip()
+
+            user_encontrado = User.objects.filter(username=usuario).first()
+            if not user_encontrado:
+                contexto['msg_erro'] = '⚠️ Usuário não encontrado! Verifique seu login.'
+            else:
+                whatsapp_banco = ''.join(filter(str.isdigit, user_encontrado.last_name or ''))
+                if whatsapp_digitado and whatsapp_digitado == whatsapp_banco:
+                    user_encontrado.set_password(nova_senha)
+                    user_encontrado.save()
+                    contexto['usuario_confirmado'] = usuario
+                    contexto['msg_sucesso'] = f'✓ Senha atualizada com sucesso para {usuario}!'
+                else:
+                    contexto['msg_erro'] = '⚠️ O WhatsApp informado não confere com o cadastro deste usuário.'
+        return render(request, 'redefinir_senha.html', contexto)
+
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
 urlpatterns = [
@@ -552,5 +597,6 @@ urlpatterns = [
     path('icone_app.png', icone_app_pwa, name='icone_app_pwa'),
     path('gerenciar-servicos/', gerenciar_servicos, name='gerenciar_servicos'),
     path('confirmar-pagamento/<int:agendamento_id>/', confirmar_pagamento, name='confirmar_pagamento'),
+    path('redefinir-senha/', pagina_redefinir_senha, name='redefinir_senha'),
 
 ]

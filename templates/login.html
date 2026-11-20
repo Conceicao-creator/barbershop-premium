@@ -119,21 +119,21 @@
         {% endif %}
 
         <!-- 🔑 MUDANÇA ESSENCIAL: Método POST para enviar dados ocultos com segurança -->
-        <form method="POST" action="/login/">
-            {% csrf_token %} <!-- 🛡️ ESCUDO PROTETOR CONTRA HACKERS DO DJANGO -->
+            <form method="POST" action="/login/">
+            {% csrf_token %}
 
             <div class="campo-grupo">
                 <label for="username">Nome de Usuário</label>
-                <!-- O segredo está no name="username" -->
-                <input type="text" id="username" name="username" class="campo-input" placeholder="Seu usuário (Ex: maria)" required>
-                <input type="text" name="username" class="campo-input" value="{{ request.GET.novo_usuario|default:'' }}" placeholder="Seu nome de usuário" autocomplete="new-password" required>
-
+                <input type="text" id="username" name="username" class="campo-input" value="{{ request.GET.novo_usuario|default:'' }}" placeholder="Seu usuário (Ex: maria)" autocomplete="new-password" required>
             </div>
 
-            <div class="campo-grupo">
+            <div class="campo-grupo" style="margin-bottom: 10px;">
                 <label for="senha">Senha Secreta</label>
-                <!-- O segredo está no name="password" -->
                 <input type="password" id="senha" name="password" class="campo-input" placeholder="••••••••" required>
+            </div>
+
+            <div style="text-align: right; margin-bottom: 20px;">
+                <a href="/redefinir-senha/" style="color: #00F5D4; font-size: 0.85rem; text-decoration: none;">Esqueceu sua senha? Crie outra 🔑</a>
             </div>
 
             <button type="submit" class="botao-entrar">Entrar</button>
@@ -141,6 +141,7 @@
 
         <a href="/cadastro/" class="link-alternativo">Não tem uma conta? Cadastre-se aqui</a>
         <a href="/" class="link-voltar">← Voltar para a entrada</a>
+
     </div>
     <script>
     const params = new URLSearchParams(window.location.search);

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Nova Senha</title>
+    <style>
+        body {
+            background-color: #121214;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .login-card {
+            background-color: #202024;
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #29292e;
+            text-align: center;
+        }
+        .titulo-login {
+            font-size: 1.7rem;
+            color: #00F5D4;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .subtitulo {
+            color: #A8A8B3;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+        }
+        .campo-grupo {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+        .campo-grupo label {
+            display: block;
+            color: #A8A8B3;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .campo-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 5px;
+            border: 2px solid #29292e;
+            background-color: #121214;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .campo-input:focus {
+            outline: none;
+            border-color: #00F5D4;
+        }
+        .botao-entrar {
+            width: 100%;
+            background-color: #00F5D4;
+            color: #121214;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+        .botao-entrar:hover {
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.6);
+        }
+        .mensagem-erro {
+            background-color: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+            border: 1px solid #FF6B6B;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+        }
+        .mensagem-sucesso {
+            background-color: rgba(0, 245, 212, 0.1);
+            color: #00F5D4;
+            border: 1px solid #00F5D4;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .link-voltar {
+            display: block;
+            margin-top: 20px;
+            color: #A8A8B3;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .link-voltar:hover { color: #00F5D4; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2 class="titulo-login">Criar Nova Senha 🔑</h2>
+        <p class="subtitulo">Confirme seu usuário e WhatsApp cadastrado para redefinir sua senha na hora</p>
+
+        {% if msg_erro %}
+            <div class="mensagem-erro">{{ msg_erro }}</div>
+        {% endif %}
+
+        {% if msg_sucesso %}
+            <div class="mensagem-sucesso">{{ msg_sucesso }}</div>
+            <a href="/login/?novo_usuario={{ usuario_confirmado }}" class="botao-entrar" style="display: block; text-decoration: none; box-sizing: border-box;">Ir para o Login →</a>
+        {% else %}
+            <form method="POST" action="/redefinir-senha/">
+                {% csrf_token %}
+
+                <div class="campo-grupo">
+                    <label for="username">Nome de Usuário (Login)</label>
+                    <input type="text" id="username" name="username" class="campo-input" placeholder="Ex: maria" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="whatsapp">WhatsApp Cadastrado (com DDD)</label>
+                    <input type="text" id="whatsapp" name="whatsapp" class="campo-input" placeholder="Ex: 11999999999" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="nova_senha">Nova Senha</label>
+                    <input type="password" id="nova_senha" name="nova_senha" class="campo-input" placeholder="Digite sua nova senha" required>
+                </div>
+
+                <button type="submit" class="botao-entrar">Salvar Nova Senha</button>
+            </form>
+        {% endif %}
+
+        <a href="/login/" class="link-voltar">← Voltar para o Login</a>
+    </div>
+
+</body>
+</html>
