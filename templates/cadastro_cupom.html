@@ -76,23 +76,41 @@
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Desconto</th>
+                        <th>Desconto (R$)</th>
                         <th>Status</th>
+                        <th style="text-align: center;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cupom in lista_cupons %}
                     <tr>
-                        <td style="font-weight: bold; color: #FFFFFF;">{{ cupom.codigo }}</td>
-                        <td style="color: #FF6B6B; font-weight: bold;">R$ {{ cupom.valor_desconto }}</td>
+                        <td colspan="2">
+                            <form method="POST" style="display: flex; gap: 8px; align-items: center; margin: 0; flex-wrap: wrap;">
+                                {% csrf_token %}
+                                <input type="hidden" name="acao" value="editar">
+                                <input type="hidden" name="cupom_id" value="{{ cupom.id }}">
+                                <input type="text" name="novo_codigo" value="{{ cupom.codigo }}" style="width: 140px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; padding: 6px 8px; color: #FFFFFF; font-weight: bold; font-size: 0.9rem; text-transform: uppercase;">
+                                <input type="number" name="novo_valor" step="0.01" value="{{ cupom.valor_desconto|stringformat:'.2f' }}" style="width: 80px; background-color: #121214; border: 1px solid #29292e; border-radius: 4px; padding: 6px 8px; color: #FF6B6B; font-weight: bold; font-size: 0.9rem;">
+                                <button type="submit" title="Salvar alterações" style="background: rgba(0, 245, 212, 0.15); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">💾 Salvar</button>
+                            </form>
+                        </td>
                         <td><span class="badge-ativo">Ativo</span></td>
+                        <td style="text-align: center;">
+                            <form method="POST" style="margin: 0;" onsubmit="return confirm('Deseja realmente excluir o cupom {{ cupom.codigo }}?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="acao" value="excluir">
+                                <input type="hidden" name="cupom_id" value="{{ cupom.id }}">
+                                <button type="submit" style="background: rgba(255, 107, 107, 0.15); border: 1px solid #FF6B6B; color: #FF6B6B; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem;">🗑️ Excluir</button>
+                            </form>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="3" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px;">Nenhum cupom ativo no reino.</td>
+                        <td colspan="4" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px;">Nenhum cupom ativo no reino.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
+
             </table>
         </div>
 

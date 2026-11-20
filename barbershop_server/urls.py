@@ -426,23 +426,60 @@ def cadastrar_cupom(request):
     msg_sucesso = ""
     msg_erro = ""
     if request.method == 'POST':
-        codigo = request.POST.get('codigo', '').upper().strip()
-        valor = request.POST.get('valor_desconto', '0.00')
-        try:
-            valor_num = float(valor)
-            if CupomDesconto.objects.filter(codigo=codigo).exists():
-                msg_erro = f"O cupom {codigo} já está cadastrado na fábrica!"
-            else:
-                CupomDesconto.objects.create(codigo=codigo, valor_desconto=valor_num, ativo=True)
-                msg_sucesso = f"✓ Cupom {codigo} de R$ {valor_num:.2f} fabricado com sucesso!"
-        except ValueError:
-            msg_erro = "Digite um valor de desconto numérico válido!"
+        acao = request.POST.get('acao', 'criar')
+        if acao == 'excluir':
+            cupom_id = request.POST.get('cupom_id')
+            cupom = CupomDesconto.objects.filter(id=cupom_id).first()
+            if cupom:
+                nome_cupom = cupom.codigo
+                cupom.delete()
+                msg_sucesso = f"Cupom {nome_cupom} removido com sucesso!"
+        elif acao == 'editar':
+            cupom_id = request.POST.get('cupom_id')
+            novo_codigo = request.POST.get('novo_codigo', '').upper().strip()
+            novo_valor = str(request.POST.get('novo_valor', '0')).replace(',', '.')
+            cupom = CupomDesconto.objects.filter(id=cupom_id).first()
+            if cupom:
+                try:
+                    if novo_codigo and novo_codigo != cupom.codigo:
+                        if CupomDesconto.objects.filter(codigo=novo_codigo).exclude(id=cupom.id).exists():
+                            msg_erro = f"Já existe outro cupom com o código {novo_codigo}!"
+                        else:
+                            cupom.codigo = novo_codigo
+                    if not msg_erro:
+                        cupom.valor_desconto = float(novo_valor)
+                        cupom.save()
+                        msg_sucesso = f"Cupom {cupom.codigo} atualizado para R$ {cupom.valor_desconto:.2f}!"
+                except ValueError:
+                    msg_erro = "Digite um valor numérico válido para editar!"
 
-        lista_cupons = CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('-id')
+        else:
+            codigo = request.POST.get('codigo', '').upper().strip()
+            valor = str(request.POST.get('valor_desconto', '0.00')).replace(',', '.')
+            try:
+                valor_num = float(valor)
+                if CupomDesconto.objects.filter(codigo=codigo).exists():
+                    msg_erro = f"O cupom {codigo} já está cadastrado na fábrica!"
+                else:
+                    CupomDesconto.objects.create(codigo=codigo, valor_desconto=valor_num, ativo=True)
+                    msg_sucesso = f"Cupom {codigo} de R$ {valor_num:.2f} fabricado com sucesso!"
+            except ValueError:
+                msg_erro = "Digite um valor de desconto numérico válido!"
 
-        return render(request, 'cadastro_cupom.html', {'msg_sucesso': msg_sucesso, 'msg_erro': msg_erro, 'lista_cupons': lista_cupons})
+                for c in CupomDesconto.objects.all():
+                    codigo_limpo = ''.join([letra for letra in c.codigo if not letra.isdigit()]).strip()
+                    if codigo_limpo and codigo_limpo != c.codigo:
+                        if not CupomDesconto.objects.filter(codigo=codigo_limpo).exclude(id=c.id).exists():
+                            c.codigo = codigo_limpo
+                            c.save()
 
-
+    lista_cupons = CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('-id')
+    return render(request, 'cadastro_cupom.html', {
+        'msg_sucesso': msg_sucesso,
+        'msg_erro': msg_erro,
+        'msg_alerta': msg_erro,
+        'lista_cupons': lista_cupons,
+    })
 
 def disparar_zap(request, agendamento_id):
     from urllib.parse import quote
