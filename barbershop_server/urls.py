@@ -223,6 +223,7 @@ def pagina_checkout(request):
                     return render(request, 'checkout.html', contexto)
 
 
+                ja_esta_pago = meio_escolhido in ['PIX', 'Saldo']
 
                 novo_agendamento = Agendamento.objects.create(
                     cliente=request.user,
@@ -230,12 +231,13 @@ def pagina_checkout(request):
                     barbeiro=barbeiro_escolhido,
                     data=data_real,
                     horario=horario_real,
-                    pago=True,
+                    pago=ja_esta_pago,
                     valor_bruto=preco_numero,
                     desconto_aplicado=desconto_total_aplicado,
                     meio_pagamento=meio_escolhido
                 )
                 novo_agendamento.save()
+
 
                 bonus_novo = preco_com_desconto_cupom * 0.10
                 carteira.saldo_cashback += bonus_novo
@@ -436,6 +438,17 @@ def cancelar_corte(request, agendamento_id):
             corte.delete()
     return redirect('servicos')
 
+def confirmar_pagamento(request, agendamento_id):
+    if request.user.is_authenticated and request.user.is_staff:
+        corte = Agendamento.objects.filter(id=agendamento_id).first()
+        if corte:
+            corte.pago = True
+            corte.meio_pagamento = f"{corte.meio_pagamento} (Pago)"
+            corte.save()
+    return redirect('painel_barbeiro')
+
+
+
 def exportar_caixa(request):
     response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
     response['Content-Disposition'] = 'attachment; filename="relatorio_caixa_barbershop.csv"'
@@ -521,5 +534,6 @@ urlpatterns = [
     path('sw.js', service_worker_pwa, name='service_worker_pwa'),
     path('icone_app.png', icone_app_pwa, name='icone_app_pwa'),
     path('gerenciar-servicos/', gerenciar_servicos, name='gerenciar_servicos'),
+    path('confirmar-pagamento/<int:agendamento_id>/', confirmar_pagamento, name='confirmar_pagamento'),
 
 ]
