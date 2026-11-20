@@ -290,12 +290,17 @@ def central_financeira(request):
     cupons_utilizados = []
     for corte in todos_agendamentos:
         if corte.desconto_aplicado > 0:
+            liquido_corte = max(0.0, corte.valor_bruto - corte.desconto_aplicado)
             cupons_utilizados.append({
                 'cliente': corte.cliente.first_name if corte.cliente.first_name else corte.cliente.username,
                 'servico': corte.servico,
                 'data': corte.data,
-                'desconto': f"{corte.desconto_aplicado:,.2f}".replace('.', ',')
+                'valor_bruto': f"{corte.valor_bruto:,.2f}".replace('.', ','),
+                'desconto': f"{corte.desconto_aplicado:,.2f}".replace('.', ','),
+                'valor_liquido': f"{liquido_corte:,.2f}".replace('.', ','),
+                'meio_pagamento': corte.meio_pagamento or 'PIX',
             })
+
     meta_mensal = 2500.00
     porcentagem_meta = min(100, int((lucro_liquido / meta_mensal) * 100)) if meta_mensal > 0 else 0
     falta_meta = max(0.0, meta_mensal - lucro_liquido)
