@@ -345,6 +345,7 @@ def central_financeira(request):
     for indice, cli in enumerate(usuarios_clientes, start=1):
         carteira_cli, _ = PerfilCliente.objects.get_or_create(user=cli)
         lista_clientes_cadastrados.append({
+            'id': cli.id,
             'numero': indice,
             'nome': cli.first_name if cli.first_name else cli.username,
             'usuario': cli.username,
@@ -354,6 +355,23 @@ def central_financeira(request):
             'data_cadastro': cli.date_joined.strftime('%d/%m/%Y') if cli.date_joined else '-',
         })
 
+
+        usuarios_barbeiros = User.objects.filter(is_staff=True).exclude(username='maria').order_by('id')
+        lista_profissionais_cadastrados = []
+        for indice, barb in enumerate(usuarios_barbeiros, start=1):
+            cortes_barb = Agendamento.objects.filter(barbeiro=barb.username)
+            qtd_cortes_barb = cortes_barb.count()
+            faturamento_barb = sum(max(0.0, c.valor_bruto - c.desconto_aplicado) for c in cortes_barb)
+            lista_profissionais_cadastrados.append({
+                'id': barb.id,
+                'numero': indice,
+                'nome': barb.first_name if barb.first_name else barb.username,
+                'usuario': barb.username,
+                'email': barb.email if barb.email else '-',
+                'qtd_cortes': qtd_cortes_barb,
+                'faturamento': f"{faturamento_barb:,.2f}".replace('.', ','),
+                'data_cadastro': barb.date_joined.strftime('%d/%m/%Y') if barb.date_joined else '-',
+            })
 
 
     contexto_financeiro = {
@@ -387,6 +405,8 @@ def central_financeira(request):
         'pct_celular': pct_celular,
         'lista_clientes_cadastrados': lista_clientes_cadastrados,
         'total_clientes': len(lista_clientes_cadastrados),
+        'lista_profissionais_cadastrados': lista_profissionais_cadastrados,
+        'total_profissionais': len(lista_profissionais_cadastrados),
 
     }
     return render(request, 'faturamento.html', contexto_financeiro)
@@ -608,7 +628,44 @@ def gerenciar_servicos(request):
                     contexto['msg_sucesso'] = f'✓ Senha atualizada com sucesso para {usuario}!'
                 else:
                     contexto['msg_erro'] = '⚠️ O WhatsApp informado não confere com o cadastro deste usuário.'
-        return render(request, 'redefinir_senha.html', contexto)
+            return render(request, 'redefinir_senha.html', contexto)
+
+def atualizar_cadastro(request):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        user_id_param = request.GET.get('user_id') or request.POST.get('user_id')
+        if user_id_param and (request.user.username == 'maria' or request.user.is_superuser):
+            alvo = User.objects.filter(id=user_id_param).first() or request.user
+        else:
+            alvo = request.user
+
+        msg_sucesso = ''
+        msg_erro = ''
+
+        if request.method == 'POST':
+            novo_nome = request.POST.get('first_name', '').strip()
+            novo_whatsapp = request.POST.get('whatsapp', '').strip()
+            novo_email = request.POST.get('email', '').strip()
+            nova_senha = request.POST.get('nova_senha', '').strip()
+
+            if novo_nome:
+                alvo.first_name = novo_nome
+            alvo.last_name = novo_whatsapp
+            alvo.email = novo_email
+            if nova_senha:
+                alvo.set_password(nova_senha)
+            alvo.save()
+            msg_sucesso = f'✓ Cadastro de {alvo.first_name or alvo.username} atualizado com sucesso!'
+
+        voltar_url = '/central-lucros/' if request.user.username == 'maria' else (
+            '/painel-barbeiro/' if request.user.is_staff else '/servicos/')
+        return render(request, 'atualizar_cadastro.html', {
+            'alvo': alvo,
+            'msg_sucesso': msg_sucesso,
+            'msg_erro': msg_erro,
+            'voltar_url': voltar_url,
+        })
 
 
 # MATRIZ DE URLS DO SISTEMA IMPERIAL:
@@ -635,5 +692,6 @@ urlpatterns = [
     path('gerenciar-servicos/', gerenciar_servicos, name='gerenciar_servicos'),
     path('confirmar-pagamento/<int:agendamento_id>/', confirmar_pagamento, name='confirmar_pagamento'),
     path('redefinir-senha/', pagina_redefinir_senha, name='redefinir_senha'),
+    path('atualizar-cadastro/', atualizar_cadastro, name='atualizar_cadastro'),
 
 ]

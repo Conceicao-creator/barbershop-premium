@@ -215,6 +215,7 @@
                             <th style="text-align: left; padding: 10px;">E-mail</th>
                             <th style="text-align: center; padding: 10px;">Cadastro</th>
                             <th style="text-align: right; padding: 10px;">Cashback</th>
+                            <th style="text-align: center; padding: 10px;">Ação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -241,6 +242,10 @@
                             <td style="text-align: right; padding: 12px 10px; color: #a855f7; font-weight: bold;">
                                 R$ {{ cli.cashback }}
                             </td>
+                                                        <td style="text-align: center; padding: 12px 10px;">
+                            <a href="/atualizar-cadastro/?user_id={{ cli.id }}" style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; background-color: rgba(0, 245, 212, 0.12); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">✏️ Editar</a>
+                            </td>
+
                         </tr>
                         {% empty %}
                         <tr>
@@ -253,6 +258,74 @@
                 </table>
             </div>
         </div>
+
+                    <!-- ✂️ TABELA DE PROFISSIONAIS CADASTRADOS -->
+        <div class="bloco-grafico" style="margin-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <div class="bloco-titulo" style="font-size: 0.95rem; color: #00F5D4; margin: 0;">
+                    ✂️ Base Oficial de Profissionais Cadastrados
+                </div>
+                <span style="background-color: rgba(0, 245, 212, 0.15); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
+                    Total de Profissionais: {{ total_profissionais }}
+                </span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="tabela-grafico" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-transform: uppercase; font-size: 0.75rem; color: #00F5D4; letter-spacing: 1px; border-bottom: 1px solid #29292e;">
+                            <th style="text-align: center; padding: 10px; width: 60px;">Nº</th>
+                            <th style="text-align: left; padding: 10px;">Profissional</th>
+                            <th style="text-align: left; padding: 10px;">Login</th>
+                            <th style="text-align: left; padding: 10px;">E-mail</th>
+                            <th style="text-align: center; padding: 10px;">Atendimentos</th>
+                            <th style="text-align: right; padding: 10px;">Faturamento Gerado</th>
+                            <th style="text-align: center; padding: 10px;">Ação</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for barb in lista_profissionais_cadastrados %}
+                        <tr style="border-bottom: 1px solid #29292e;">
+                            <td style="text-align: center; padding: 12px 10px; font-weight: bold; color: #00F5D4;">
+                                #{{ barb.numero }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #FFFFFF; font-weight: bold;">
+                                {{ barb.nome }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #A8A8B3; font-size: 0.9rem;">
+                                {{ barb.usuario }}
+                            </td>
+                            <td style="text-align: left; padding: 12px 10px; color: #A8A8B3; font-size: 0.9rem;">
+                                {{ barb.email }}
+                            </td>
+                            <td style="text-align: center; padding: 12px 10px; color: #FFFFFF; font-weight: bold;">
+                                {{ barb.qtd_cortes }}
+                            </td>
+                            <td style="text-align: right; padding: 12px 10px; color: #00F5D4; font-weight: bold;">
+                                R$ {{ barb.faturamento }}
+                            </td>
+                            <td style="text-align: center; padding: 12px 10px;">
+                                <a href="/atualizar-cadastro/?user_id={{ barb.id }}" style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; background-color: rgba(0, 245, 212, 0.12); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">✏️ Editar</a>
+                            </td>
+
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #A8A8B3; font-style: italic; padding: 20px 0;">
+                                Nenhum profissional cadastrado até o momento.
+                            </td>
+                            <td style="text-align: center; padding: 12px 10px;">
+    <a href="/atualizar-cadastro/?user_id={{ barb.id }}" style="display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; background-color: rgba(0, 245, 212, 0.12); border: 1px solid #00F5D4; color: #00F5D4; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold;">✏️ Editar</a>
+</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
 
 
         </div>

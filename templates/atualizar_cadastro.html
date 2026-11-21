@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium | Atualizar Cadastro</title>
+    <style>
+        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .card-cadastro { background-color: #202024; padding: 35px; border-radius: 10px; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border: 1px solid #29292e; text-align: center; }
+        .titulo { font-size: 1.7rem; color: #00F5D4; margin: 0 0 8px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .subtitulo { color: #A8A8B3; font-size: 0.85rem; margin-bottom: 22px; }
+        .campo-grupo { text-align: left; margin-bottom: 16px; }
+        .campo-grupo label { display: block; color: #A8A8B3; margin-bottom: 6px; font-size: 0.82rem; text-transform: uppercase; }
+        .campo-input { width: 100%; padding: 12px 14px; border-radius: 5px; border: 2px solid #29292e; background-color: #121214; color: #FFFFFF; font-size: 0.95rem; box-sizing: border-box; }
+        .campo-input:focus { outline: none; border-color: #00F5D4; }
+        .botao-salvar { width: 100%; background-color: #00F5D4; color: #121214; border: none; padding: 14px; font-size: 1rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: all 0.3s ease; }
+        .botao-salvar:hover { box-shadow: 0 0 20px rgba(0, 245, 212, 0.6); }
+        .alerta-sucesso { background-color: rgba(0, 245, 212, 0.1); color: #00F5D4; border: 1px solid #00F5D4; padding: 12px; border-radius: 5px; margin-bottom: 18px; font-size: 0.9rem; font-weight: bold; }
+        .link-voltar { display: block; margin-top: 18px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; }
+        .link-voltar:hover { color: #00F5D4; }
+    </style>
+</head>
+<body>
+
+    <div class="card-cadastro">
+        <h2 class="titulo">Atualizar Cadastro ✏️</h2>
+        <p class="subtitulo">Usuário: <strong style="color: #00F5D4;">{{ alvo.username }}</strong></p>
+
+        {% if msg_sucesso %}
+            <div class="alerta-sucesso">{{ msg_sucesso }}</div>
+        {% endif %}
+
+        <form method="POST" action="/atualizar-cadastro/">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ alvo.id }}">
+
+            <div class="campo-grupo">
+                <label for="first_name">Nome Completo</label>
+                <input type="text" id="first_name" name="first_name" class="campo-input" value="{{ alvo.first_name }}" required>
+            </div>
+
+            <div class="campo-grupo">
+                <label for="whatsapp">WhatsApp (com DDD)</label>
+                <input type="text" id="whatsapp" name="whatsapp" class="campo-input" value="{{ alvo.last_name }}" placeholder="Ex: 11999999999">
+            </div>
+
+            <div class="campo-grupo">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" class="campo-input" value="{{ alvo.email }}" placeholder="seuemail@exemplo.com">
+            </div>
+
+            <div class="campo-grupo">
+                <label for="nova_senha">Nova Senha (deixe em branco para manter a atual)</label>
+                <input type="password" id="nova_senha" name="nova_senha" class="campo-input" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="botao-salvar">Salvar Alterações</button>
+        </form>
+
+        <a href="{{ voltar_url }}" class="link-voltar">← Voltar ao Painel</a>
+    </div>
+
+</body>
+</html>
