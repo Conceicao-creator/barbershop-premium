@@ -42,15 +42,78 @@
         <span id="resumo_barbeiro">{{ barbeiro_escolhido|default:"Qualquer Profissional ✂️" }}</span>
 
         </div>
-            <div class="resumo-linha"><span>Horário:</span><span>{{ data_escolhida }} às {{ horario_escolhido }} 📅</span></div>
-            <div class="resumo-linha total"><span>Total:</span><span id="valor_total">R$ {{ preco_escolhido }}</span></div>
-        </div>
+                <span>Horário:</span>
+                <span>
+                    {{ data_escolhida }} às {{ horario_escolhido }} 📅
+                    <button type="button" onclick="document.getElementById('box_editar_horario').style.display='flex'" style="background: rgba(0, 245, 212, 0.12); border: 1px solid #00F5D4; color: #00F5D4; border-radius: 5px; padding: 3px 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; margin-left: 6px;">
+                        ✏️ Alterar
+                    </button>
+                </span>
+            </div>
+
+            <!-- 📅 BOX EDITÁVEL DE DATA E HORÁRIO (ABRE AUTOMATICAMENTE SE DER INDISPONÍVEL) -->
+
+
+            <!-- 📅 BOX EDITÁVEL DE DATA E HORÁRIO -->
+        <form id="box_editar_horario" method="POST" action="" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background-color: #121214; border: 1px dashed #00F5D4; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+            {% csrf_token %}
+            <input type="hidden" name="servico" value="{{ servico_escolhido }}">
+            <input type="hidden" name="preco" value="{{ preco_original }}">
+            <input type="hidden" name="cupom_promocional" value="{{ cupom_codigo }}">
+
+            <input type="text" name="data" value="{{ data_escolhida }}" placeholder="DD/MM/AAAA" style="flex: 1 1 110px; background-color: #202024; border: 1px solid #29292e; border-radius: 4px; padding: 8px; color: #FFFFFF; font-size: 0.85rem; font-weight: bold;">
+
+                    <select id="select_horario_edit" name="horario" style="flex: 1 1 95px; background-color: #202024; border: 1px solid #29292e; border-radius: 4px; padding: 8px; color: #FFFFFF; font-size: 0.85rem; font-weight: bold;">
+                <option value="09:00h">09:00h</option>
+                <option value="10:00h">10:00h</option>
+                <option value="11:00h">11:00h</option>
+                <option value="13:00h">13:00h</option>
+                <option value="14:00h">14:00h</option>
+                <option value="15:00h">15:00h</option>
+                <option value="16:00h">16:00h</option>
+                <option value="17:00h">17:00h</option>
+                <option value="18:00h">18:00h</option>
+                <option value="19:00h">19:00h</option>
+            </select>
+            <script>
+                document.getElementById('select_horario_edit').value = '{{ horario_escolhido }}';
+                    const inputDataEdit = document.querySelector('#box_editar_horario input[name="data"]');
+    const selectHoraEdit = document.getElementById('select_horario_edit');
+
+    function sincronizarDataHora() {
+        document.querySelectorAll('input[name="data"]').forEach(el => {
+            if (el !== inputDataEdit) el.value = inputDataEdit.value;
+        });
+        document.querySelectorAll('input[name="horario"]').forEach(el => {
+            el.value = selectHoraEdit.value;
+        });
+    }
+
+    if (inputDataEdit && selectHoraEdit) {
+        inputDataEdit.addEventListener('change', sincronizarDataHora);
+        inputDataEdit.addEventListener('keyup', sincronizarDataHora);
+        selectHoraEdit.addEventListener('change', sincronizarDataHora);
+        sincronizarDataHora();
+    }
+
+            </script>
+
+            <button type="submit" style="background-color: #00F5D4; color: #121214; border: none; border-radius: 4px; padding: 8px 12px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-transform: uppercase;">
+                ✓ Atualizar
+            </button>
+        </form>
         <!-- 🎟️ BOX IMPERIAL DE CUPOM PROMOCIONAL -->
         <div style="background-color: #202024; border: 1px dashed #FF6B6B; border-radius: 8px; padding: 18px; margin-bottom: 20px; width: 100%; box-sizing: border-box;">
             <h3 style="color: #FF6B6B; margin: 0 0 10px 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">🎟️ Possui um Cupom de Desconto?</h3>
 
             <form method="POST" action="" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; width: 100%;">
                 {% csrf_token %}
+                                <input type="hidden" name="servico" value="{{ servico_escolhido }}">
+                <input type="hidden" name="preco" value="{{ preco_original }}">
+                <input type="hidden" name="data" value="{{ data_escolhida }}">
+                <input type="hidden" name="horario" value="{{ horario_escolhido }}">
+
+
                 <label for="id_cupom_promocional" style="display: none;">Cupom Promocional</label>
                 <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
             <select id="id_cupom_promocional" name="cupom_promocional" style="flex: 1; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.9rem; font-weight: bold;">

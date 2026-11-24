@@ -168,8 +168,9 @@ def pagina_checkout(request):
         except Exception:
             preco_numero = 85.00
 
-        data_real = request.POST.get('data') or request.GET.get('data', '14/10/2026')
-        horario_real = request.POST.get('horario') or request.GET.get('horario', '18:00h')
+        data_real = request.POST.get('data') or request.GET.get('data', '14/10/2026').strip()
+        horario_real = request.POST.get('horario') or request.GET.get('horario', '18:00h').strip()
+
 
         saldo_atual = 15.00
         if request.user.is_authenticated:
@@ -244,9 +245,21 @@ def pagina_checkout(request):
                     data=data_real.strip(), horario=horario_real.strip(), barbeiro=barbeiro_escolhido
                 )
 
+                try:
+                    agora_br = timezone.localtime(timezone.now())
+                    hora_limpa = horario_real.replace('h', '').strip()
+                    dt_escolhida = datetime.strptime(f"{data_real} {hora_limpa}", "%d/%m/%Y %H:%M")
+                    dt_escolhida_aware = timezone.make_aware(dt_escolhida, timezone.get_current_timezone())
+                    if dt_escolhida_aware <= agora_br:
+                        contexto['msg_cupom_erro'] = f'⚠️ Horário expirado! Não é possível agendar para {data_real} às {horario_real} pois esse horário já passou.'
+                        return render(request, 'checkout.html', contexto)
+                except Exception:
+                    pass
+
                 if ja_existe.exists():
                     contexto['msg_cupom_erro'] = f'⚠️ Horário indisponível! Já existe agendamento para {data_real} às {horario_real}.'
                     return render(request, 'checkout.html', contexto)
+
 
 
                 ja_esta_pago = meio_escolhido in ['PIX', 'Saldo']
@@ -277,6 +290,18 @@ def pagina_checkout(request):
 # CENTRAL FINANCEIRA COM FILTRO DE BARBEIROS E AUDITORIA FISCAL DINAMICA:
 def central_financeira(request):
     barbeiro_selecionado = request.GET.get('barbeiro_filtro', 'todos')
+
+    # ⏰ TRAVA CONTRA DATA PASSADA OU HORÁRIO DE HOJE JÁ EXPIRADO
+    horario_expirado = False
+    try:
+        agora_br = timezone.localtime(timezone.now())
+        hora_limpa = horario_real.replace('h', '').strip()
+        dt_escolhida = datetime.strptime(f"{data_real} {hora_limpa}", "%d/%m/%Y %H:%M")
+        dt_escolhida_aware = timezone.make_aware(dt_escolhida, timezone.get_current_timezone())
+        if dt_escolhida_aware <= agora_br:
+            horario_expirado = True
+    except Exception:
+        pass
 
     if barbeiro_selecionado == 'todos':
         todos_agendamentos = Agendamento.objects.all()
