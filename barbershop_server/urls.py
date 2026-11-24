@@ -152,9 +152,12 @@ def pagina_barbeiro(request):
         agendamentos_painel = Agendamento.objects.filter(barbeiro=request.user.username).order_by('-id')
     else:
         agendamentos_painel = Agendamento.objects.all().order_by('-id')
+    nome_prof = (request.user.first_name or request.user.username) if request.user.is_authenticated else 'Profissional'
     return render(request, 'painel_barbeiro.html', {
         'lista_cortes': agendamentos_painel,
+        'nome_profissional': nome_prof,
     })
+
 
 
 
@@ -402,11 +405,13 @@ def central_financeira(request):
                 'numero': indice,
                 'nome': barb.first_name if barb.first_name else barb.username,
                 'usuario': barb.username,
+                'whatsapp': barb.last_name if barb.last_name else '-',
                 'email': barb.email if barb.email else '-',
                 'qtd_cortes': qtd_cortes_barb,
                 'faturamento': f"{faturamento_barb:,.2f}".replace('.', ','),
                 'data_cadastro': barb.date_joined.strftime('%d/%m/%Y') if barb.date_joined else '-',
             })
+
 
 
     contexto_financeiro = {
@@ -643,26 +648,29 @@ def gerenciar_servicos(request):
     servicos = ServicoBarbearia.objects.all().order_by('-id')
     return render(request, 'gerenciar_servicos.html', {'servicos': servicos, 'msg_sucesso': msg_sucesso})
 
-    def pagina_redefinir_senha(request):
-        contexto = {'msg_erro': '', 'msg_sucesso': '', 'usuario_confirmado': ''}
-        if request.method == 'POST':
-            usuario = request.POST.get('username', '').lower().strip()
-            whatsapp_digitado = ''.join(filter(str.isdigit, request.POST.get('whatsapp', '')))
-            nova_senha = request.POST.get('nova_senha', '').strip()
+def pagina_redefinir_senha(request):
+    contexto = {'msg_erro': '', 'msg_sucesso': '', 'usuario_confirmado': ''}
+    if request.method == 'POST':
+        usuario = request.POST.get('username', '').lower().strip()
+        whatsapp_digitado = ''.join(filter(str.isdigit, request.POST.get('whatsapp', '')))
+        nova_senha = request.POST.get('nova_senha', '').strip()
 
-            user_encontrado = User.objects.filter(username=usuario).first()
-            if not user_encontrado:
-                contexto['msg_erro'] = '⚠️ Usuário não encontrado! Verifique seu login.'
+        user_encontrado = User.objects.filter(username=usuario).first()
+        if not user_encontrado:
+            contexto['msg_erro'] = '⚠️ Usuário não encontrado! Verifique seu login.'
+        else:
+            whatsapp_banco = ''.join(filter(str.isdigit, user_encontrado.last_name or ''))
+            if not whatsapp_banco:
+                contexto['msg_erro'] = '⚠️ Este usuário ainda não possui WhatsApp cadastrado. Solicite à administração a atualização do cadastro.'
+            elif whatsapp_digitado and whatsapp_digitado == whatsapp_banco:
+                user_encontrado.set_password(nova_senha)
+                user_encontrado.save()
+                contexto['usuario_confirmado'] = usuario
+                contexto['msg_sucesso'] = f'✓ Senha atualizada com sucesso para {usuario}!'
             else:
-                whatsapp_banco = ''.join(filter(str.isdigit, user_encontrado.last_name or ''))
-                if whatsapp_digitado and whatsapp_digitado == whatsapp_banco:
-                    user_encontrado.set_password(nova_senha)
-                    user_encontrado.save()
-                    contexto['usuario_confirmado'] = usuario
-                    contexto['msg_sucesso'] = f'✓ Senha atualizada com sucesso para {usuario}!'
-                else:
-                    contexto['msg_erro'] = '⚠️ O WhatsApp informado não confere com o cadastro deste usuário.'
-            return render(request, 'redefinir_senha.html', contexto)
+                contexto['msg_erro'] = '⚠️ O WhatsApp informado não confere com o cadastro deste usuário.'
+    return render(request, 'redefinir_senha.html', contexto)
+
 
 def atualizar_cadastro(request):
         if not request.user.is_authenticated:
