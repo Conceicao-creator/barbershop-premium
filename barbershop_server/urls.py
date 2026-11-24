@@ -40,8 +40,8 @@ def pagina_login(request):
     registrar_visita(request)
     cupons_ativos = CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('id')
     if request.method == 'POST':
-        usuario_digitado = (request.POST.get('username') or '').strip()
-        senha_digitada = request.POST.get('password') or ''
+        usuario_digitado = request.POST.get('username', '').strip().lower()
+        senha_digitada = request.POST.get('password', '').strip()
         user_obj = User.objects.filter(username__iexact=usuario_digitado).first()
         username_real = user_obj.username if user_obj else usuario_digitado
         usuario_validado = authenticate(request, username=username_real, password=senha_digitada)
