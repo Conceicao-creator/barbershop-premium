@@ -4,57 +4,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BarberShop Imperial | Credenciamento</title>
+    <title>BarberShop Imperial | Credenciamento Real</title>
     <style>
-        body { background-color: #121214; color: #FFFFFF; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .box-cadastro { background-color: #202024; border: 1px solid #29292e; border-radius: 10px; padding: 40px 30px; width: 100%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; box-sizing: border-box; }
-        .titulo-neon { font-size: 1.8rem; color: #00F5D4; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px rgba(0, 245, 212, 0.3); margin-bottom: 5px; }
-        .subtitulo { color: #A8A8B3; font-size: 0.9rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
-        .campo-grupo { margin-bottom: 20px; text-align: left; position: relative; width: 100%; box-sizing: border-box; }
-        .campo-input { width: 100%; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 14px; color: #FFFFFF; font-size: 0.95rem; box-sizing: border-box; transition: border-color 0.3s; }
-        .campo-input:focus { border-color: #00F5D4; outline: none; }
-        .botao-cadastrar { width: 100%; background-color: #00F5D4; border: none; color: #121214; border-radius: 5px; padding: 14px; font-size: 1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
-        .botao-cadastrar:hover { box-shadow: 0 0 15px rgba(0,245,212,0.4); background-color: #00e6c4; }
-        .alert-sucesso { color: #00F5D4; background-color: rgba(0, 245, 212, 0.1); border: 1px solid #00F5D4; padding: 12px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; text-align: center; }
-        .alert-erro { color: #FF6B6B; background-color: rgba(255, 107, 107, 0.1); border: 1px solid #FF6B6B; padding: 12px; border-radius: 5px; font-size: 0.9rem; font-weight: bold; margin-bottom: 20px; text-align: center; }
-        .link-voltar { display: inline-block; margin-top: 20px; color: #A8A8B3; text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        body {
+            background-color: #121214;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card-credenciamento {
+            background-color: #202024;
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #29292e;
+            text-align: center;
+        }
+        .titulo-neon {
+            font-size: 1.8rem;
+            color: #00F5D4;
+            margin: 0 0 8px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        .subtitulo {
+            color: #A8A8B3;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+        .campo-grupo {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .campo-input {
+            width: 100%;
+            padding: 13px 15px;
+            border-radius: 5px;
+            border: 1px solid #29292e;
+            background-color: #121214;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        .campo-input:focus {
+            outline: none;
+            border-color: #00F5D4;
+        }
+        .botao-cadastrar {
+            width: 100%;
+            background-color: #00F5D4;
+            color: #121214;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+        .botao-cadastrar:hover {
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.6);
+        }
+        .alerta-sucesso {
+            background-color: rgba(0, 245, 212, 0.1);
+            color: #00F5D4;
+            border: 1px solid #00F5D4;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .alerta-erro {
+            background-color: rgba(255, 107, 107, 0.1);
+            color: #FF6B6B;
+            border: 1px solid #FF6B6B;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+        }
+        .link-voltar {
+            display: block;
+            margin-top: 22px;
+            color: #A8A8B3;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
         .link-voltar:hover { color: #00F5D4; }
     </style>
 </head>
 <body>
-    <div class="box-cadastro">
-        <h1 class="titulo-neon">Credenciamento Real 🪒</h1>
-        <p class="subtitulo">Cadastrar Novo Profissional na Rede</p>
+
+    <div class="card-credenciamento">
+        <h2 class="titulo-neon">Credenciamento Real 🪒</h2>
+        <p class="subtitulo">Cadastrar novo profissional na rede</p>
 
         {% if msg_sucesso %}
-            <div class="alert-sucesso">{{ msg_sucesso }}</div>
+            <div class="alerta-sucesso">{{ msg_sucesso }}</div>
         {% endif %}
-        {% if msg_alerta %}
-            <div class="alert-erro">{{ msg_alerta }}</div>
+        {% if msg_erro %}
+            <div class="alerta-erro">{{ msg_erro }}</div>
         {% endif %}
 
         <form method="POST" action="">
             {% csrf_token %}
 
             <div class="campo-grupo">
-                <label for="id_username" style="display: none;">Username</label>
-                <input type="text" id="id_username" name="username" class="campo-input" placeholder="Ex: gabriel.barber" autocomplete="new-password" required>
+                <input type="text" name="username" class="campo-input" placeholder="Ex: gabriel.barber" autocomplete="off" required>
             </div>
 
             <div class="campo-grupo">
-                <label for="first_name" style="display: none;">Nome Completo</label>
-                <input type="text" id="first_name" name="first_name" class="campo-input" placeholder="Ex: Gabriel Master" autocomplete="off" required>
+                <input type="text" name="first_name" class="campo-input" placeholder="Ex: Gabriel Master" autocomplete="off" required>
             </div>
 
             <div class="campo-grupo">
-                <label for="password" style="display: none;">Senha</label>
-                <input type="password" id="password" name="password" class="campo-input" placeholder="••••••••" autocomplete="new-password" required>
+                <input type="password" name="password" class="campo-input" placeholder="Crie a senha do profissional" autocomplete="new-password" required>
             </div>
+
 
             <button type="submit" class="botao-cadastrar">Credenciar Profissional</button>
         </form>
 
         <a href="/central-lucros/" class="link-voltar">← Voltar para a Central Financeira</a>
     </div>
+
 </body>
 </html>

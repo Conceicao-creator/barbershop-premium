@@ -53,7 +53,15 @@
                 {% csrf_token %}
                 <label for="id_cupom_promocional" style="display: none;">Cupom Promocional</label>
                 <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
-                    <input type="text" id="id_cupom_promocional" name="cupom_promocional" value="{{ cupom_codigo }}" placeholder="DIGITE O CUPOM" style="flex: 2 1 150px; min-width: 0; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.95rem; text-transform: uppercase; box-sizing: border-box;" autocomplete="off">
+            <select id="id_cupom_promocional" name="cupom_promocional" style="flex: 1; background-color: #121214; border: 1px solid #29292e; border-radius: 5px; padding: 12px; color: #FFFFFF; font-size: 0.9rem; font-weight: bold;">
+            <option value="">-- Escolha um cupom disponível --</option>
+            {% for c in cupons_ativos %}
+        <option value="{{ c.codigo }}" {% if cupom_codigo == c.codigo %}selected{% endif %}>
+            🎟️ {{ c.codigo }} (- R$ {{ c.valor_desconto|floatformat:2 }})
+        </option>
+    {% endfor %}
+</select>
+
                     <button type="submit" style="flex: 1 1 90px; background-color: transparent; border: 1px solid #FF6B6B; color: #FF6B6B; border-radius: 5px; padding: 12px 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; box-sizing: border-box;" onmouseover="this.style.backgroundColor='rgba(255,107,107,0.1)'" onmouseout="this.style.backgroundColor='transparent'">Aplicar</button>
                 </div>
             </form>

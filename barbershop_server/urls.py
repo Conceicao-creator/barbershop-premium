@@ -204,6 +204,8 @@ def pagina_checkout(request):
             'msg_cupom_sucesso': msg_cupom_sucesso,
             'msg_cupom_erro': msg_cupom_erro,
             'lista_barbeiros': User.objects.filter(is_staff=True).exclude(username='maria'),
+            'cupons_ativos': CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('codigo')
+
         }
 
         if request.method == 'POST' and 'finalizar_agendamento' in request.POST:
