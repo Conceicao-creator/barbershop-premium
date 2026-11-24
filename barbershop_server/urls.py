@@ -341,9 +341,13 @@ def central_financeira(request):
     larguras = {dia: (qtd / maior_volume) * 100 for dia, qtd in contagem_dias.items()}
 
     cupons_utilizados = []
-    for corte in todos_agendamentos:
+
+    for corte in todos_agendamentos.order_by('-id'):
         if corte.desconto_aplicado > 0:
             liquido_corte = max(0.0, corte.valor_bruto - corte.desconto_aplicado)
+            status_pg = getattr(corte, 'status_pagamento', 'Pago') or 'Pago'
+            meio_pg = corte.meio_pagamento or 'PIX'
+            esta_pago = (status_pg != 'Pendente') and ('Balcão' not in meio_pg) and ('Pagar' not in meio_pg)
             cupons_utilizados.append({
                 'cliente': corte.cliente.first_name if corte.cliente.first_name else corte.cliente.username,
                 'servico': corte.servico,
@@ -351,7 +355,8 @@ def central_financeira(request):
                 'valor_bruto': f"{corte.valor_bruto:,.2f}".replace('.', ','),
                 'desconto': f"{corte.desconto_aplicado:,.2f}".replace('.', ','),
                 'valor_liquido': f"{liquido_corte:,.2f}".replace('.', ','),
-                'meio_pagamento': corte.meio_pagamento or 'PIX',
+                'meio_pagamento': meio_pg,
+                'esta_pago': esta_pago,
             })
 
     meta_mensal = 2500.00
