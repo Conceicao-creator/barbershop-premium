@@ -38,10 +38,13 @@ def pagina_inicial(request):
 
 def pagina_login(request):
     registrar_visita(request)
+    cupons_ativos = CupomDesconto.objects.filter(ativo=True).exclude(codigo='').order_by('id')
     if request.method == 'POST':
-        usuario_digitado = request.POST.get('username')
-        senha_digitada = request.POST.get('password')
-        usuario_validado = authenticate(request, username=usuario_digitado, password=senha_digitada)
+        usuario_digitado = (request.POST.get('username') or '').strip()
+        senha_digitada = request.POST.get('password') or ''
+        user_obj = User.objects.filter(username__iexact=usuario_digitado).first()
+        username_real = user_obj.username if user_obj else usuario_digitado
+        usuario_validado = authenticate(request, username=username_real, password=senha_digitada)
         if usuario_validado is not None:
             auth_login(request, usuario_validado)
             user_instancia = User.objects.get(pk=usuario_validado.pk)
@@ -52,8 +55,8 @@ def pagina_login(request):
                 return redirect('painel_barbeiro')
             return redirect('servicos')
         else:
-            return render(request, 'login.html', {'erro': 'Usuário ou senha incorretos. Tente novamente!'})
-    return render(request, 'login.html')
+            return render(request, 'login.html', {'erro': 'Usuário ou senha incorretos. Tente novamente!', 'cupons_ativos': cupons_ativos})
+    return render(request, 'login.html', {'cupons_ativos': cupons_ativos})
 
 
 def pagina_cadastro(request):

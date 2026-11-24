@@ -122,10 +122,11 @@
             <form method="POST" action="/login/">
             {% csrf_token %}
 
-            <div class="campo-grupo">
+                <div class="campo-grupo">
                 <label for="username">Nome de Usuário</label>
-                <input type="text" id="username" name="username" class="campo-input" value="{{ request.GET.novo_usuario|default:'' }}" placeholder="Seu usuário (Ex: maria)" autocomplete="new-password" required>
+                <input type="text" id="username" name="username" class="campo-input" placeholder="Seu usuário" autocapitalize="none" spellcheck="false" required>
             </div>
+
 
             <div class="campo-grupo" style="margin-bottom: 10px;">
                 <label for="senha">Senha Secreta</label>
