@@ -449,10 +449,9 @@ def cadastrar_barbeiro(request):
         senha = request.POST.get('password', '')
 
         if not usuario:
-            contexto['msg_erro'] = '⚠️ Digite um nome de usuário válido!'
+            msg_erro = '⚠️ Digite um nome de usuário válido!'
         elif User.objects.filter(username=usuario).exists():
-            contexto['msg_erro'] = f"⚠️ O login '{usuario}' já está em uso. Escolha outro!"
-
+            msg_erro = f"⚠️ O login '{usuario}' já está em uso. Escolha outro!"
         else:
             novo_barbeiro = User.objects.create_user(
                 username=usuario,
