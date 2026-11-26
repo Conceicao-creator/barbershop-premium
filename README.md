@@ -1,3 +1,5 @@
+<img width="1376" height="768" alt="capa-barbershop png" src="https://github.com/user-attachments/assets/8353088e-7d49-4c40-8280-635dd0fdeb01" />
+
 # 👑 BarberShop Premium — Sistema ERP & Gestão Inteligente (PWA)
 
 🌐 **Acesse o Sistema Online:** [https://mariaconceicao.pythonanywhere.com](https://mariaconceicao.pythonanywhere.com)
